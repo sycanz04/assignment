@@ -3,6 +3,7 @@
 #include <string> 
 using namespace std;
 
+
 int main () {
     // Create a text file
     // ofstream MyWriteFile("filename.txt");
@@ -14,19 +15,26 @@ int main () {
     // MyWriteFile.close();
 
     // Create a text string, which is used to output the text file
-    string myText;
+    string line;
+    const string move = "MOV";
+    const string add = "ADD";
+    const string mul = "MUL";
+    const string store = "STORE";
 
     // Read from the text file
-    ifstream MyReadFile("data.txt");
+    ifstream datafile("data.txt");
 
-    // Use a while loop together with the getline() function to read the file line by line
-    while (getline (MyReadFile, myText)) {
-        // Output the text from the file
-        cout << myText << endl;
+    // Use loop to read file line by line
+    while (getline (datafile, line)) {
+        if (line.find(move) != string::npos) {
+            // Execute the corresponding instruction
+            cout << "MOV found" << endl;
+        }
+        else{
+            cout << "MOV not found" << endl;
+        }
     }
 
     // Close the file
-    MyReadFile.close();
-
-    return 0;
+    datafile.close();
 }
