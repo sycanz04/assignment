@@ -22,7 +22,7 @@ int main () {
     // Use a while loop together with the getline() function to read the file line by line
     while (getline (MyReadFile, myText)) {
         // Output the text from the file
-        cout << myText;
+        cout << myText << endl;
     }
 
     // Close the file
