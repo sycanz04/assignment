@@ -17,12 +17,12 @@ int main () {
     string myText;
 
     // Read from the text file
-    ifstream MyReadFile("filename.txt");
+    ifstream MyReadFile("data.txt");
 
     // Use a while loop together with the getline() function to read the file line by line
     while (getline (MyReadFile, myText)) {
         // Output the text from the file
-        cout << myText;
+        cout << myText << endl;
     }
 
     // Close the file

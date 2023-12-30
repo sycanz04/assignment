@@ -1,1 +1,6 @@
-data here. 
+MOV R1, 5
+ADD R1, 6
+MOV R1, R3
+MUL R3, 4
+STORE R3, 20
+STORE R1, 14
