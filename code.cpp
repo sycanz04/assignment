@@ -3,7 +3,6 @@
 #include <string> 
 using namespace std;
 
-
 int main () {
     // Check if the file "data.txt" exists
     ifstream check("data.txt");
@@ -46,4 +45,5 @@ int main () {
             }
         }
     }
+    cout << "Hello World" << endl; 
 }
