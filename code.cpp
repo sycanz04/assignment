@@ -47,5 +47,7 @@ int main () {
         }
     }
 
-    cout << "test";
+    cout << "test jan";
+
+    return 0;
 }
