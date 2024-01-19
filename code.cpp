@@ -3,6 +3,10 @@
 #include <string> 
 using namespace std;
 
+void Hello()
+{
+    cout << "Hell world";
+}
 
 int main () {
     // Check if the file "data.txt" exists
