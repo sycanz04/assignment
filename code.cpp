@@ -44,6 +44,5 @@ int main () {
                 cout << "No commands found" << endl;
             }
         }
-    }
-    cout << "Hello World" << endl; 
+    } 
 }
