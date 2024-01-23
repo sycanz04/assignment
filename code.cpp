@@ -5,13 +5,13 @@ using namespace std;
 
 int main () {
     // Check if the file "data.txt" exists
-    ifstream check("data.txt");
+    ifstream check("data.asm");
     bool exists = check.good();
     check.close();
 
     // If it doesn't exists, create a new text file
     if (!exists){
-        ofstream datafile("data.txt");
+        ofstream datafile("data.asm");
     }
 
     else{
@@ -23,7 +23,7 @@ int main () {
         const string store = "STORE";
 
         // Read from the text file
-        ifstream datafile("data.txt");
+        ifstream datafile("data.asm");
 
         // Use loop to read file line by line
         while (getline (datafile, line)) {
