@@ -5,7 +5,7 @@ using namespace std;
 
 int main () {
     // Check if the file "data.txt" exists
-    ifstream check("data.txt");
+    ifstream check("data.asm");
     bool exists = check.good();
     check.close();
 
