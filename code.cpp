@@ -1,10 +1,42 @@
 #include <iostream>
 #include <fstream>
 #include <string> 
+#include <iomanip>
 using namespace std;
 
-void reading();
+//Memory and register sizes
+const int MEM_SIZE = 8;
+const int REG_SIZE = 8;
 
+//Initialising 2D and 1D array for memory and registers respectively
+int memory[MEM_SIZE][MEM_SIZE] = {0}; // Initializing memory with zeros
+int registers[REG_SIZE] = {0}; // Initializing registers with zeros
+
+//Function prototypes
+void reading();
+void MemAndReg();
+
+void MemAndReg() {
+
+    // Print Registers
+    cout << "Registers:" << endl;
+    for (int i = 0; i < REG_SIZE; ++i) {
+        cout << "R" << i << ": " << setw(4) << registers[i] << "   ";
+    }
+    cout << endl << endl;
+
+        // Print Memory
+    cout << "Memory:" << endl;
+    for (int i = 0; i < MEM_SIZE; ++i) {
+        for (int j = 0; j < MEM_SIZE; ++j) {
+            cout << setw(4) << memory[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+
+//Read file function
 void reading(){
     // Check if the file "data.txt" exists
     ifstream check("data.asm");
@@ -52,6 +84,7 @@ void reading(){
 int main()
 {
     reading();
+    MemAndReg();
 
     return 0;
 }
