@@ -25,7 +25,7 @@ void MemAndReg() {
     }
     cout << endl << endl;
 
-        // Print Memory
+    // Print Memory
     cout << "Memory:" << endl;
     for (int i = 0; i < MEM_SIZE; ++i) {
         for (int j = 0; j < MEM_SIZE; ++j) {
