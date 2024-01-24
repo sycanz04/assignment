@@ -35,6 +35,8 @@ int main() {
     // Print initial state
     printMemoryAndRegisters();
 
+    cout << "Hello world!" << endl;
+
     // Your code to read and execute ASM instructions goes here
     // Update the memory and registers accordingly
 
