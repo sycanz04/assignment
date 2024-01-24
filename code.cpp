@@ -3,7 +3,9 @@
 #include <string> 
 using namespace std;
 
-int main () {
+void reading();
+
+void reading(){
     // Check if the file "data.txt" exists
     ifstream check("data.asm");
     bool exists = check.good();
@@ -45,4 +47,11 @@ int main () {
             }
         }
     }
+}
+
+int main()
+{
+    reading();
+
+    return 0;
 }
