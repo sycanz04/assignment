@@ -6,6 +6,8 @@ using namespace std;
 
 int main () {
 
+
+
     const string MOVE = "MOV";
     const string ADD = "ADD";
     const string MUL = "MUL";
@@ -17,8 +19,9 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[6] = {0, 16, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 122, 0, 0, 0, 0, 0}; // R0 to R7
     string error;
+    helper h;
     
 
     // Check if the file "data.txt" exists
@@ -28,13 +31,13 @@ int main () {
 
     // If it doesn't exists, create a new text file
     if (!exists){
+        h.display("data.asm file not found, new file created");
         ofstream datafile("data.asm");
     }
 
     else{
         // Create a text string, which is used to output the text file
         string line;
-        helper h;
 
         string operation = "";
         string firstOperand  = "";
@@ -45,35 +48,37 @@ int main () {
         // Use loop to read file line by line
         while (getline (datafile, line)) {
 
-            if (line.length() == 0) 
-                continue;
+            if (line.length() == 0) continue;
 
-            string * result = h.parseLine(line); //expecting an array with 3 values
+            string * result = h.parseLine(line); //expects an array with 3 values
 
-            if (result == NULL ) { //need discussion: this immediately exits / want continue
-                cout << "Compile error: Invalid line: " + line << endl;
-                return 0;
+            if (result == NULL ) {
+                cout<<"Compile error: Invalid line: "+line<<endl;
+                return 0;   //DISCUSS
             }  
 
             string operation = result[0];
             string firstOperand  = result[1];
             string secondOperand = result[2];
 
+
             h.display("Operation: " + result[0]);
             h.display("first param: " + result[1]);
             h.display("send param: " + result[2]);
             h.display("-----------");
 
+
+            int secondValue = 0;
            
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || operation == ROTATE_RIGHT) {
 
                 if (!h.isRegister(firstOperand, error)) {
-                    h.display(error);   //DISCUSS WANT QUIT ANOT
-                    return 0;
+                    h.display(error);
+                    return 0;   //DISCUSS
                 }
 
-                // getting the value from the register
-                string registeryIndexString(1, firstOperand[1]); //converting charater to string
+                // Getting the value from the register, converting the character to an integer
+                string registeryIndexString(1, firstOperand[1]);
                 int registeryIndex = stoi(registeryIndexString);
                 int registeryValue = registers[registeryIndex];
 
@@ -90,14 +95,14 @@ int main () {
                 else if (operation == SHIFT_RIGHT) {
                     outcome = registeryValue >> shiftNumber;
                 } else if (operation == ROTATE_LEFT) {
-                    outcome = (registeryValue << shiftNumber) | (registeryValue >> (INT_BITS - shiftNumber));
+                    outcome = (registeryValue << shiftNumber) | (registeryValue >> (INT_BITS - shiftNumber)); 
 
                 } else if (operation == ROTATE_RIGHT) {
                     outcome = (registeryValue >> shiftNumber)|(registeryValue << (INT_BITS - shiftNumber)); 
                 }
-                registeryValue = outcome;   //assign the character to the integer so that it shows the number
+                registeryValue = outcome; //assign the character to the intger so that it will show when printing out
                 cout << registeryValue << endl;
-                registers[registeryIndex] = registeryValue; //storing it back to register
+                registers[registeryIndex] = registeryValue;
 
                 continue;
             
@@ -107,3 +112,4 @@ int main () {
     }
 
 } 
+
