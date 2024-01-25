@@ -51,7 +51,7 @@ int main () {
         }
     }
 
-    cout << "test jan";
+    cout << "test jan again\n";
 
     return 0;
 }
