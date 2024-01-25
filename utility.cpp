@@ -14,40 +14,39 @@ class helper {
         result[2] = "";
         string temp = ""; 
     
-        for (auto letter : line) {  // Iterates through each character in the input line
-            if (letter == ',' && (result[0].length() == 0 || result[1].length() == 0))
-                return NULL; // invalid line, return empty array 
+        for (auto letter: line) {
+                    if (letter == ',' && result[0].length() == 0) return NULL; // invalid line, return empty array 
 
-            if (letter == '/') // if detected comment
-                break;
+                    if (letter == '/') 
+                        break;
 
-            if (letter != ' ' && letter != ',') {
-                temp += toupper(letter);    // adding the operator to result[0]
-            } else if (letter == ' ' && temp.length() > 0 ) {  
-                if (result[0].length() == 0) {  
-                    result[0] = temp; 
-                    temp = "";  //resets temp to an empty string
-                } else if (result[1].length() == 0) { 
-                    return NULL;
+                    if (letter != ' ' && letter != ',') {
+                        temp += toupper(letter);
+                    } else if (letter == ' ' && temp.length() > 0 ) {
+                        if (result[0].length() == 0) {
+                            result[0] = temp; // command
+                            temp = "";
+                        } else if (result[1].length() == 0) {
+                            return NULL;
+                        }
+                    } else if (letter == ',' && temp.length() > 0 && result[1].length() == 0) {
+                        result[1] = temp; // op1
+                        temp = "";
+                    } else if  ((letter == ' ' || letter == ',') && temp.length() > 0 && result[1].length() > 0) 
+                        break;
+                } 
+
+                if (result[0].length() > 0 && temp.length() > 0) {
+                    if (result[1].length() == 0) 
+                        result[1] = temp; 
+                    else 
+                        result[2] = temp;
                 }
-            } else if (letter == ',' && temp.length() > 0 && result[1].length() == 0) {
-                result[1] = temp; // op1
-                temp = "";
-            } else if  ((letter == ' ' || letter == ',') && temp.length() > 0 && result[1].length() > 0) 
-                break;
-        } 
 
-        if (result[0].length() > 0 && temp.length() > 0) {
-            if (result[1].length() == 0) //for IN cause only 2 parameters
-                result[1] = temp; 
-            else 
-                result[2] = temp;
-        }
-
-        if (result[0].length() == 0 || result[1].length() == 0)
-            return NULL; // invalid line, return empty array
-        
-        return result;
+                if (result[0].length() == 0 || result[1].length() == 0)
+                     return NULL; // invalid line, return empty array
+                
+                return result;
     }
 
     bool isNumber(string value) {
