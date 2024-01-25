@@ -15,10 +15,10 @@ class helper {
         string temp = ""; 
     
         for (auto letter : line) {  // Iterates through each character in the input line
-            if (letter == ',' && result[0].length() == 0)
+            if (letter == ',' && (result[0].length() == 0 || result[1].length() == 0))
                 return NULL; // invalid line, return empty array 
 
-            if (letter == '/')  //why break and why /
+            if (letter == '/') // if detected comment
                 break;
 
             if (letter != ' ' && letter != ',') {
@@ -38,7 +38,7 @@ class helper {
         } 
 
         if (result[0].length() > 0 && temp.length() > 0) {
-            if (result[1].length() == 0) 
+            if (result[1].length() == 0) //for IN cause only 2 parameters
                 result[1] = temp; 
             else 
                 result[2] = temp;
@@ -51,18 +51,18 @@ class helper {
     }
 
     bool isNumber(string value) {
-
         int number;
-        try{
-            number = stoi(value); 
+
+        try {
+            number = stoi(value); //try to convert value to number
         }
-        catch(std::exception& e) {
+        catch(exception & e) { // catches the error (if cannot convert, then it is not a number)
             return false;
         } 
         return true;
     }
 
-    bool checkValue (string value, string& error) {
+    bool checkValue (string value, string& error) {     //can use for in, out, add, mul, div but not tested
 
         if (!isNumber(value)) {
             return false;
@@ -77,17 +77,18 @@ class helper {
 
     }
 
-    bool isRegister(std::string value, string& error) {
+    bool isRegister(string value, string &error) {
        
         if (value.length() != 2 || value[0] != 'R' || !isdigit(value[1])) {
             error = "invalid register entry";
             return false;
         }
          
-         string indexString(1, value[1]);
-         int index = stoi(indexString);
-         if (index < 0 or index > 7) {
+         string indexString(1, value[1]); //creates a string using the value[1] character
+         int index = stoi(indexString); //converts the string to an integer
+         if (index < 0 || index > 6) {
             error = "Register's index out of range";
+            return false;
          }
 
         return true;    
