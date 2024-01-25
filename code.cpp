@@ -107,22 +107,3 @@ int main () {
     }
 
 } 
-
-
-/*
-            // If found keyword in string, then execute command
-            if (line.find(move) != string::npos) {
-                cout << "MOV found" << endl;
-            }
-            else if (line.find(add) != string::npos) {
-                cout << "ADD found" << endl;
-            }
-            else if (line.find(mul) != string::npos) {
-                cout << "MUL found" << endl;
-            }
-            else if (line.find(store) != string::npos) {
-                cout << "STORE found" << endl;
-            }
-            else {
-                cout << "No commands found" << endl;
-            } */
