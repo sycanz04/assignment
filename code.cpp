@@ -19,7 +19,7 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 122, 0, 0, 0, 0, 0}; // R0 to R7
+    int registers[6] = {0, 122, 0, 0, 0, 0}; // R0 to R6
     string error;
     helper h;
     
@@ -48,7 +48,8 @@ int main () {
         // Use loop to read file line by line
         while (getline (datafile, line)) {
 
-            if (line.length() == 0) continue;
+            if (line.length() == 0) 
+                continue;
 
             string * result = h.parseLine(line); //expects an array with 3 values
 
