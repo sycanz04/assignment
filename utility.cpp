@@ -7,37 +7,46 @@ using namespace std;
 class helper {
 
     public:
-    string * parseLine(string line) {
-        static string result[3]; // 1 = command, 2 = op1, 3 = op2
-        string parameter = "";
-        string temp = "";
+    string* parseLine(string line) {
+        static string result[3]; // 1 = command, 2 = op1, ""3 = op2
+        result[0] = "";
+        result[1] = "";
+        result[2] = "";
+        string temp = ""; 
     
-        for (auto letter : line) {
-            if (letter == ',' && result[0].length() == 0) return NULL; // invalid line, return empty array 
+        for (auto letter : line) {  // Iterates through each character in the input line
+            if (letter == ',' && result[0].length() == 0)
+                return NULL; // invalid line, return empty array 
 
-            if (letter == '/') break;
+            if (letter == '/')  //why break and why /
+                break;
 
             if (letter != ' ' && letter != ',') {
-                temp += toupper(letter);
-            } else if (letter == ' ' && temp.length() > 0 ) {
-                if (result[0].length() == 0) {
-                    result[0] = temp; // command
-                    temp = "";
-                } else if (result[1].length() == 0) {
+                temp += toupper(letter);    // adding the operator to result[0]
+            } else if (letter == ' ' && temp.length() > 0 ) {  
+                if (result[0].length() == 0) {  
+                    result[0] = temp; 
+                    temp = "";  //resets temp to an empty string
+                } else if (result[1].length() == 0) { 
                     return NULL;
                 }
             } else if (letter == ',' && temp.length() > 0 && result[1].length() == 0) {
                 result[1] = temp; // op1
                 temp = "";
-            } else if  ((letter == ' ' || letter == ',') && temp.length() > 0 && result[1].length() > 0) break;
+            } else if  ((letter == ' ' || letter == ',') && temp.length() > 0 && result[1].length() > 0) 
+                break;
         } 
 
         if (result[0].length() > 0 && temp.length() > 0) {
-            if (result[1].length() == 0) result[1] = temp; else result[2] = temp;
+            if (result[1].length() == 0) 
+                result[1] = temp; 
+            else 
+                result[2] = temp;
         }
 
-        if (result[0].length() == 0 || result[1].length() == 0) return NULL; // invalid line, return empty array
-         
+        if (result[0].length() == 0 || result[1].length() == 0)
+            return NULL; // invalid line, return empty array
+        
         return result;
     }
 

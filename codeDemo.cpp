@@ -8,7 +8,6 @@ using namespace std;
 int main () {
 
 
-
     const string move = "MOV";
     const string add = "ADD";
     const string mul = "MUL";
@@ -18,21 +17,10 @@ int main () {
     const string rotateRight = "ROR";
     const string store = "STORE";
 
-/*    std::map<char[2], int> register = {
-        { "R0", 0 },
-        { "R1", 128 },
-        { "R2", 0 },
-        { "R3", 0 },
-        { "R4", 0 },
-        { "R5", 0 },
-        { "R6", 0 },
-        { "R7", 0 }
-    };
-
-*/
-    int registers[7] = {0, 5, 0, 0, 0, 0, 0}; // R0 to R7
+    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R7
     string error;
-    
+    helper h; // using the functions from the helper class, short form as h
+
 
     // Check if the file "data.txt" exists
     ifstream check("data.asm");
@@ -41,43 +29,42 @@ int main () {
 
     // If it doesn't exists, create a new text file
     if (!exists){
+        h.display("data.asm file not found, new file created");
         ofstream datafile("data.asm");
     }
 
     else{
         // Create a text string, which is used to output the text file
         string line;
-        helper h;
 
-        string operation = "";
-        string firstOperand  = "";
-        string secondOperand = "";
+        string operation, 
+               firstOperand,
+               secondOperand;
 
         // Read from the text file
         ifstream datafile("data.asm");
-        // Use loop to read file line by line
-        while (getline (datafile, line)) {
+        // Use while loop to read file line by line
+        while (getline(datafile, line)) { 
 
-            if (line.length() == 0) continue;
+            if (line.length() == 0) //Skip processing for empty lines
+                continue;
 
-            string* result = h.parseLine(line);
+            string* result = h.parseLine(line); //Result is declared as a pointer to a string, pointer to the address of where the array is stored
+                                                 //The parseLine method is returning the pointer to a string array.
 
-            if (result == NULL ) {
-                cout<<"Compile error: Invalid line: "+line<<endl;
+            if (result == NULL) {
+                h.display("Compile error: Invalid line: " + line); //why does not print out if file is null
                 return 0;
             }  
 
-            string operation = result[0];
-            string firstOperand  = result[1];
-            string secondOperand = result[2];
-
+            operation = result[0];
+            firstOperand  = result[1];
+            secondOperand = result[2];
 
             h.display("Operation: " + result[0]);
             h.display("first param: " + result[1]);
-            h.display("send param: " + result[2]);
+            h.display("second param: " + result[2]);
             h.display("-----------");
-
-
 
             char firstValue;
             int secondValue = 0;
