@@ -110,11 +110,11 @@ class helper {
         return stringRemovedBrackets;
     }
         
-    int charToInt(string operand, int index, int array[]) {
+    int charToInt(string operand, int index) {
         string registeryIndexString(1, operand[index]); //convert a char that was pulled from a string into a string
         int registeryIndex = stoi(registeryIndexString); //convert the string to an integer
         return registeryIndex;
     }
 
 
-};
+}; // i tot qwe doingcodde review nt ocin gcidoing
