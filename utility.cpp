@@ -85,7 +85,7 @@ class helper {
          
          string indexString(1, value[1]); //creates a string using the value[1] character
          int index = stoi(indexString); //converts the string to an integer
-         if (index < 0 || index > 6) {
+         if (index < 0 || index > 7) {
             error = "Register's index out of range";
             return false;
          }

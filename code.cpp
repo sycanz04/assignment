@@ -19,7 +19,7 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[6] = {0, 122, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 122, 0, 0, 0, 0, 0}; // R0 to R6
     string error;
     helper h;
     
