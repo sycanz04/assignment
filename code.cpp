@@ -59,25 +59,31 @@ void reading(){
         // Read from the text file
         ifstream datafile("data.asm");
 
+        int pc = 0;
         // Use loop to read file line by line
         while (getline (datafile, line)) {
             // If found keyword in string, then execute command
             if (line.find(move) != string::npos) {
                 cout << "MOV found" << endl;
+                pc += 1;
             }
             else if (line.find(add) != string::npos) {
-                cout << "ADD found" << endl;
+                cout << "ADD found" << endl; 
+                pc += 1;
             }
             else if (line.find(mul) != string::npos) {
                 cout << "MUL found" << endl;
+                pc += 1;
             }
             else if (line.find(store) != string::npos) {
                 cout << "STORE found" << endl;
+                pc += 1;
             }
             else {
                 cout << "No commands found" << endl;
             }
         }
+        cout << "Program Counter: " << pc << endl;
     }
 }
 
