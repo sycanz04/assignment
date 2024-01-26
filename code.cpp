@@ -71,6 +71,8 @@ int main () {
             string firstOperand  = result[1]; 
             string secondOperand = result[2];
 
+            int registryIndex = 0;
+            int registryValue = 0;
 
             h.display("Operation: " + result[0]);
             h.display("first param: " + result[1]);
@@ -79,7 +81,7 @@ int main () {
 
            
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || 
-                operation == ROTATE_RIGHT || operation == LOAD) {
+                operation == ROTATE_RIGHT) {
                 
                 int operand2Int;
                 int removedBracketsIndex;
@@ -89,55 +91,57 @@ int main () {
                     return 0;   //DISCUSS
                 }
 
-                int registeryIndex = h.charToInt(firstOperand, 1);
-                int registeryValue = registers[registeryIndex];
-
-                if (!h.hasSquaredBrackets(secondOperand)) {
-                    if (!h.isNumber(secondOperand)) {
-                        h.display("Compile error: second operand is missing or is not a number.");
-                        return 0;
-                    } else {
-                        operand2Int = stoi(secondOperand); //value of operand2
-                    }
-                } else if (h.hasSquaredBrackets(secondOperand)) { //incase where operand has a bracket
-                    removedBracketsIndex = h.charToInt(secondOperand, 2);
-
+                if (!h.isNumber(secondOperand)) {
+                    h.display("Compile error: second operand is missing or is not a number.");
+                    return 0;
                 }
+
+                registryIndex = h.charToInt(firstOperand, 1);
+                registryValue = registers[registryIndex];
 
                 char outcome = '\0';
 
                 if (operation == SHIFT_LEFT) {
-                    outcome = registeryValue << operand2Int;
+                    outcome = registryValue << operand2Int;
                 }
                 else if (operation  == SHIFT_RIGHT) {
-                    outcome = registeryValue >> operand2Int;
+                    outcome = registryValue >> operand2Int;
 
                 } else if (operation == ROTATE_LEFT) {
-                    outcome = (registeryValue << operand2Int) | (registeryValue >> (INT_BITS - operand2Int)); 
+                    outcome = (registryValue << operand2Int) | (registryValue >> (INT_BITS - operand2Int)); 
 
                 } else if (operation == ROTATE_RIGHT) {
-                    outcome = (registeryValue >> operand2Int)|(registeryValue << (INT_BITS - operand2Int)); 
+                    outcome = (registryValue >> operand2Int)|(registryValue << (INT_BITS - operand2Int)); 
 
-                } else if (operation == LOAD) {
-                    if (!h.hasSquaredBrackets(secondOperand)) {
-                        // for LOAD that is not dealing with address
-                        registers[registeryIndex] = MEM[operand2Int];
-
-                    } else if (h.hasSquaredBrackets(secondOperand)) {
-                        // for LOAD that is dealing with address
-                        registers[registeryIndex] = registers[removedBracketsIndex] ;
-                        for (int &val : registers)
-                            cout << val << ' ';
-                            cout << endl;
-                    }
                 }
 
-                registeryValue = outcome; //assign the character to the integer so that it will show when printing out
-                cout << registeryValue << endl;
-                registers[registeryIndex] = registeryValue;
+                registryValue = outcome; //assign the character to the integer so that it will show when printing out
+                cout << registryValue << endl;
+                registers[registryIndex] = registryValue;
 
-                continue;
-            
+            } else if (operation == LOAD) {
+
+                if (!h.isRegister(firstOperand, error)) {
+                    h.display(error);
+                    return 0;   //DISCUSS
+                }
+
+                int secondOperandValue = 0;
+                if (h.isNumber(secondOperand)) { // if it is memory address
+                    // TODO: check if memory index is out of range(between 0 and 63)
+                    int memoryIndex = stoi(secondOperand);
+                    secondOperandValue = MEM[memoryIndex];
+                } else if (h.hasSquaredBrackets(secondOperand)) { // if it is register
+                    registryIndex = h.charToInt(secondOperand, 2);
+                    secondOperandValue = registers[registryIndex];
+                } else {
+                    h.display("Compile error: second operand is not in the format [Rddr]");
+                    return 0;                
+                }
+
+                registryIndex = h.charToInt(firstOperand, 1);
+                registers[registryIndex] = secondOperandValue;
+      
             }
 
         }
