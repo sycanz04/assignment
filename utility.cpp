@@ -96,4 +96,10 @@ class helper {
     void display(string msg) {
         cout << msg << endl;
     }
+
+    bool hasSquareBrackets (string operand1) {
+        if (operand1[0] == '[') {
+            return true;
+        } return false;
+    }
 };

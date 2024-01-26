@@ -15,11 +15,20 @@ int main () {
     const string SHIFT_RIGHT = "SHR";
     const string ROTATE_LEFT = "ROL";
     const string ROTATE_RIGHT = "ROR";
+    const string LOAD = "LOAD";
     const string STORE = "STORE";
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 122, 0, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+    int MEM[64] = 
+    {0, 0, 0, 0, 0, 0, 55, 
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,}; //MEM[6] = 55
     string error;
     helper h;
     
@@ -71,7 +80,8 @@ int main () {
 
             int secondValue = 0;
            
-            if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || operation == ROTATE_RIGHT) {
+            if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || 
+                operation == ROTATE_RIGHT || operation == LOAD) {
 
                 if (!h.isRegister(firstOperand, error)) {
                     h.display(error);
@@ -81,27 +91,33 @@ int main () {
                 // Getting the value from the register, converting the character to an integer
                 string registeryIndexString(1, firstOperand[1]);
                 int registeryIndex = stoi(registeryIndexString);
-                int registeryValue = registers[registeryIndex];
+                int registeryValue = registers[registeryIndex]; //value at register[index]
 
                 if (!h.isNumber(secondOperand)) {
                     h.display("Compile error: second operand is missing or is not a number.");
                     return 0;
                 }
 
-                int shiftNumber = stoi(secondOperand);
-                char outcome;
+                int operand2Int = stoi(secondOperand); //value of operand2
+                char outcome = '\0';
+                cout << registeryValue << endl;
                 if (operation == SHIFT_LEFT) {
-                    outcome = registeryValue << shiftNumber;
+                    outcome = registeryValue << operand2Int;
                 }
-                else if (operation == SHIFT_RIGHT) {
-                    outcome = registeryValue >> shiftNumber;
+                else if (operation  == SHIFT_RIGHT) {
+                    outcome = registeryValue >> operand2Int;
                 } else if (operation == ROTATE_LEFT) {
-                    outcome = (registeryValue << shiftNumber) | (registeryValue >> (INT_BITS - shiftNumber)); 
+                    outcome = (registeryValue << operand2Int) | (registeryValue >> (INT_BITS - operand2Int)); 
 
                 } else if (operation == ROTATE_RIGHT) {
-                    outcome = (registeryValue >> shiftNumber)|(registeryValue << (INT_BITS - shiftNumber)); 
+                    outcome = (registeryValue >> operand2Int)|(registeryValue << (INT_BITS - operand2Int)); 
+                } else if (operation == LOAD) {
+                        registers[registeryIndex] = MEM[operand2Int];
+                        for (int &val : registers)
+                            cout << val << ' ';
+                            cout << endl;
                 }
-                registeryValue = outcome; //assign the character to the intger so that it will show when printing out
+                registeryValue = outcome; //assign the character to the integer so that it will show when printing out
                 cout << registeryValue << endl;
                 registers[registeryIndex] = registeryValue;
 
