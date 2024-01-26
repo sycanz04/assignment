@@ -1,1 +1,1 @@
-LOAD R2, 6
+LOAD R1, [R2]

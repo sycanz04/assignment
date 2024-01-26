@@ -97,8 +97,8 @@ class helper {
         cout << msg << endl;
     }
 
-    bool hasSquaredBrackets (string operand1) {
-        if (operand1[0] == '[') {
+    bool hasSquaredBrackets (string operand) {
+        if (operand[0] == '[') {
             return true;
         } return false;
     }

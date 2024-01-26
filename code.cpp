@@ -20,7 +20,7 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 99, 28, 0, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
     {0, 0, 0, 0, 0, 0, 55, 
      0, 0, 0, 0, 0, 0, 0,
@@ -68,55 +68,70 @@ int main () {
             }  
 
             string operation = result[0];
-            string firstOperand  = result[1];
+            string firstOperand  = result[1]; 
             string secondOperand = result[2];
 
 
             h.display("Operation: " + result[0]);
             h.display("first param: " + result[1]);
-            h.display("send param: " + result[2]);
+            h.display("second param: " + result[2]);
             h.display("-----------");
 
-
-            int secondValue = 0;
            
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || 
                 operation == ROTATE_RIGHT || operation == LOAD) {
+                
+                int operand2Int;
+                int removedBracketsIndex;
 
                 if (!h.isRegister(firstOperand, error)) {
                     h.display(error);
                     return 0;   //DISCUSS
                 }
 
-                // Getting the value from the register, converting the character to an integer
-                string registeryIndexString(1, firstOperand[1]);
-                int registeryIndex = stoi(registeryIndexString);
-                int registeryValue = registers[registeryIndex]; //value at register[index]
+                int registeryIndex = h.charToInt(firstOperand, 1);
+                int registeryValue = registers[registeryIndex];
 
-                if (!h.isNumber(secondOperand)) {
-                    h.display("Compile error: second operand is missing or is not a number.");
-                    return 0;
+                if (!h.hasSquaredBrackets(secondOperand)) {
+                    if (!h.isNumber(secondOperand)) {
+                        h.display("Compile error: second operand is missing or is not a number.");
+                        return 0;
+                    } else {
+                        operand2Int = stoi(secondOperand); //value of operand2
+                    }
+                } else if (h.hasSquaredBrackets(secondOperand)) { //incase where operand has a bracket
+                    removedBracketsIndex = h.charToInt(secondOperand, 2);
+
                 }
 
-                int operand2Int = stoi(secondOperand); //value of operand2
                 char outcome = '\0';
-                cout << registeryValue << endl;
+
                 if (operation == SHIFT_LEFT) {
                     outcome = registeryValue << operand2Int;
                 }
                 else if (operation  == SHIFT_RIGHT) {
                     outcome = registeryValue >> operand2Int;
+
                 } else if (operation == ROTATE_LEFT) {
                     outcome = (registeryValue << operand2Int) | (registeryValue >> (INT_BITS - operand2Int)); 
 
                 } else if (operation == ROTATE_RIGHT) {
                     outcome = (registeryValue >> operand2Int)|(registeryValue << (INT_BITS - operand2Int)); 
+
                 } else if (operation == LOAD) {
+                    if (!h.hasSquaredBrackets(secondOperand)) {
+                        // for LOAD that is not dealing with address
                         registers[registeryIndex] = MEM[operand2Int];
+
+                    } else if (h.hasSquaredBrackets(secondOperand)) {
+                        // for LOAD that is dealing with address
+                        registers[registeryIndex] = registers[removedBracketsIndex] ;
                         for (int &val : registers)
                             cout << val << ' ';
                             cout << endl;
+                    }
                 }
+
                 registeryValue = outcome; //assign the character to the integer so that it will show when printing out
                 cout << registeryValue << endl;
                 registers[registeryIndex] = registeryValue;
