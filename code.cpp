@@ -9,7 +9,7 @@ const int MEM_SIZE = 8;
 const int REG_SIZE = 8;
 
 //Initialising 2D and 1D array for memory and registers respectively
-int memory[MEM_SIZE][MEM_SIZE] = {0}; // Initializing memory with zeros
+int memory[MEM_SIZE] = {0}; // Initializing memory with zeros
 int registers[REG_SIZE] = {0}; // Initializing registers with zeros
 
 //Function prototypes
@@ -29,7 +29,7 @@ void MemAndReg() {
     cout << "Memory:" << endl;
     for (int i = 0; i < MEM_SIZE; ++i) {
         for (int j = 0; j < MEM_SIZE; ++j) {
-            cout << setw(4) << memory[i][j] << " ";
+            cout << setw(4) << memory[i] << " ";
         }
         cout << endl;
     }
