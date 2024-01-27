@@ -6,8 +6,6 @@ using namespace std;
 
 int main () {
 
-
-
     const string MOVE = "MOV";
     const string ADD = "ADD";
     const string MUL = "MUL";
@@ -31,7 +29,6 @@ int main () {
      0, 0, 0, 0, 0, 0, 0,};
     string error;
     helper h;
-    
 
     // Check if the file "data.txt" exists
     ifstream check("data.asm");
@@ -42,9 +39,7 @@ int main () {
     if (!exists){
         h.display("data.asm file not found, new file created");
         ofstream datafile("data.asm");
-    }
-
-    else{
+    } else {
         // Create a text string, which is used to output the text file
         string line;
 
@@ -78,7 +73,6 @@ int main () {
             h.display("first param: " + result[1]);
             h.display("second param: " + result[2]);
             h.display("-----------");
-
            
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || 
                 operation == ROTATE_RIGHT) {
@@ -106,16 +100,12 @@ int main () {
 
                 if (operation == SHIFT_LEFT) {
                     outcome = registryValue << operand2Int;
-                }
-                else if (operation  == SHIFT_RIGHT) {
+                } else if (operation  == SHIFT_RIGHT) {
                     outcome = registryValue >> operand2Int;
-
                 } else if (operation == ROTATE_LEFT) {
                     outcome = (registryValue << operand2Int) || (registryValue >> (INT_BITS - operand2Int)); 
-
                 } else if (operation == ROTATE_RIGHT) {
                     outcome = (registryValue >> operand2Int) || (registryValue << (INT_BITS - operand2Int)); 
-
                 }
 
                 registryValue = outcome; //Assign the character to the integer so that it will show when printing out
@@ -131,6 +121,7 @@ int main () {
 
                 int secondOperandValue = 0;
                 int memoryIndex = 0;
+                
                 if (h.isNumber(secondOperand)) { //if it is memory address
                     // TODO: check if memory index is out of range(between 0 and 63)
                     int memoryIndex = stoi(secondOperand);
