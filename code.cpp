@@ -20,15 +20,15 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 99, 28, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
-    {0, 0, 0, 0, 0, 0, 55, 
+    {0, 0, 0, 0, 0, 0, 0, 
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 0, 0,}; //MEM[6] = 55
+     0, 0, 0, 0, 0, 0, 0,};
     string error;
     helper h;
     
@@ -64,7 +64,7 @@ int main () {
 
             if (result == NULL ) {
                 cout<<"Compile error: Invalid line: "+line<<endl;
-                return 0;   //DISCUSS
+                return 0;
             }  
 
             string operation = result[0];
@@ -86,19 +86,21 @@ int main () {
                 int operand2Int;
                 int removedBracketsIndex;
 
+                //Test if first operand is a register, else quits program
                 if (!h.isRegister(firstOperand, error)) {
                     h.display(error);
-                    return 0;   //DISCUSS
+                    return 0;  
                 }
 
+                //Test if second operand is a number, else quits program
                 if (!h.isNumber(secondOperand)) {
                     h.display("Compile error: second operand is missing or is not a number.");
                     return 0;
                 }
 
-                operand2Int = stoi(secondOperand);
-                registryIndex = h.charToInt(firstOperand, 1);
-                registryValue = registers[registryIndex];
+                operand2Int = stoi(secondOperand);              //Converting second operand (shift value) into integer
+                registryIndex = h.charToInt(firstOperand, 1);   //Obtaining the index
+                registryValue = registers[registryIndex];       //Obtaining the register array value through the index
 
                 char outcome = '\0';
 
@@ -109,33 +111,33 @@ int main () {
                     outcome = registryValue >> operand2Int;
 
                 } else if (operation == ROTATE_LEFT) {
-                    outcome = (registryValue << operand2Int) | (registryValue >> (INT_BITS - operand2Int)); 
+                    outcome = (registryValue << operand2Int) || (registryValue >> (INT_BITS - operand2Int)); 
 
                 } else if (operation == ROTATE_RIGHT) {
-                    outcome = (registryValue >> operand2Int)|(registryValue << (INT_BITS - operand2Int)); 
+                    outcome = (registryValue >> operand2Int) || (registryValue << (INT_BITS - operand2Int)); 
 
                 }
 
-                registryValue = outcome; //assign the character to the integer so that it will show when printing out
-                cout << registryValue << endl; // just for testing
-                registers[registryIndex] = registryValue;
+                registryValue = outcome; //Assign the character to the integer so that it will show when printing out
+                registers[registryIndex] = registryValue; //Store the value back into register
 
             } else if (operation == LOAD || operation == STORE) {
 
+                //Test if first operand is a register, else quits program
                 if (!h.isRegister(firstOperand, error)) {
                     h.display(error);
-                    return 0;   //DISCUSS
+                    return 0; 
                 }
 
                 int secondOperandValue = 0;
                 int memoryIndex = 0;
-                if (h.isNumber(secondOperand)) { // if it is memory address
+                if (h.isNumber(secondOperand)) { //if it is memory address
                     // TODO: check if memory index is out of range(between 0 and 63)
                     int memoryIndex = stoi(secondOperand);
-                    secondOperandValue = MEM[memoryIndex];
-                } else if (h.hasSquaredBrackets(secondOperand)) { // if it is register
+                    secondOperandValue = MEM[memoryIndex];  //Obtaining the memory value of the second operand
+                } else if (h.hasSquaredBrackets(secondOperand)) { //if it is register
                     registryIndex = h.charToInt(secondOperand, 2);
-                    secondOperandValue = registers[registryIndex];
+                    secondOperandValue = registers[registryIndex];  //Obtaining the register value of the second operand
                 } else {
                     h.display("Compile error: second operand is not in the format [Rddr]");
                     return 0;                
@@ -144,22 +146,13 @@ int main () {
                 registryIndex = h.charToInt(firstOperand, 1);
 
                 if (operation == LOAD) {
-                    registers[registryIndex] = secondOperandValue; //secondOperandValue = MEM[memoryIndex]
+                    registers[registryIndex] = secondOperandValue;
                 } else if (operation == STORE) {
                     if (h.isNumber(secondOperand))
                         MEM[stoi(secondOperand)] = registers[registryIndex]; 
                     else if (h.hasSquaredBrackets(secondOperand))
                         registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
                 }
-      
-                // just for testing
-                for (int &val : registers)
-                    cout << val << ' ';
-                    cout << endl;
-
-                for (int &val : MEM)
-                    cout << val << ' ';
-                    cout << endl;
             }
 
         }
