@@ -96,6 +96,7 @@ int main () {
                     return 0;
                 }
 
+                operand2Int = stoi(secondOperand);
                 registryIndex = h.charToInt(firstOperand, 1);
                 registryValue = registers[registryIndex];
 
@@ -116,10 +117,10 @@ int main () {
                 }
 
                 registryValue = outcome; //assign the character to the integer so that it will show when printing out
-                cout << registryValue << endl;
+                cout << registryValue << endl; // just for testing
                 registers[registryIndex] = registryValue;
 
-            } else if (operation == LOAD) {
+            } else if (operation == LOAD || operation == STORE) {
 
                 if (!h.isRegister(firstOperand, error)) {
                     h.display(error);
@@ -127,6 +128,7 @@ int main () {
                 }
 
                 int secondOperandValue = 0;
+                int memoryIndex = 0;
                 if (h.isNumber(secondOperand)) { // if it is memory address
                     // TODO: check if memory index is out of range(between 0 and 63)
                     int memoryIndex = stoi(secondOperand);
@@ -140,8 +142,24 @@ int main () {
                 }
 
                 registryIndex = h.charToInt(firstOperand, 1);
-                registers[registryIndex] = secondOperandValue;
+
+                if (operation == LOAD) {
+                    registers[registryIndex] = secondOperandValue; //secondOperandValue = MEM[memoryIndex]
+                } else if (operation == STORE) {
+                    if (h.isNumber(secondOperand))
+                        MEM[stoi(secondOperand)] = registers[registryIndex]; 
+                    else if (h.hasSquaredBrackets(secondOperand))
+                        registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
+                }
       
+                // just for testing
+                for (int &val : registers)
+                    cout << val << ' ';
+                    cout << endl;
+
+                for (int &val : MEM)
+                    cout << val << ' ';
+                    cout << endl;
             }
 
         }
