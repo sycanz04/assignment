@@ -15,10 +15,13 @@ int main () {
     const string ROTATE_RIGHT = "ROR";
     const string LOAD = "LOAD";
     const string STORE = "STORE";
+    const string IN = "IN";
+    const string OUT = "OUT";
+    const string MOV = "MOV";
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 55, 0, 0, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
     {0, 0, 0, 0, 0, 0, 0, 
      0, 0, 0, 0, 0, 0, 0,
@@ -144,10 +147,39 @@ int main () {
                     else if (h.hasSquaredBrackets(secondOperand))
                         registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
                 }
+            } else if (operation == IN || operation == OUT){
+                if (operation == IN){
+                    string registeryIndexString(1, firstOperand[1]);
+                    int registeryIndex = stoi(registeryIndexString);
+
+                    int value;
+                    cin >> value;
+                    registers[registeryIndex] = value;
+                } else if (operation == OUT){
+                    string registeryIndexString(1, firstOperand[1]);
+                    int registeryIndex = stoi(registeryIndexString);
+
+                    cout << registers[registeryIndex] << endl;
+                }
+            } else if (operation == MOV){
+                if (firstOperand[0] == 'R'){
+                    string registeryIndexString1(1, firstOperand[1]);
+                    int registeryIndex1 = stoi(registeryIndexString1);
+                    string registeryIndexString2(1, secondOperand[1]);
+                    int registeryIndex2 = stoi(registeryIndexString2);
+
+                    registers[registeryIndex2] = registers[registeryIndex1];
+                } else {
+                    string registeryIndexString(1, secondOperand[1]);
+                    int registeryIndex = stoi(registeryIndexString);
+
+                    registers[registeryIndex] = stoi(firstOperand);
+                }
             }
 
         }
     }
-
+    for (int &val : registers)
+    cout << val << ' ';
 } 
 
