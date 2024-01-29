@@ -97,8 +97,8 @@ class helper {
         cout << msg << endl;
     }
 
-    bool hasSquaredBrackets (string operand1) {
-        if (operand1[0] == '[') {
+    bool hasSquaredBrackets (string operand) {
+        if (operand[0] == '[') {
             return true;
         } return false;
     }
@@ -110,11 +110,11 @@ class helper {
         return stringRemovedBrackets;
     }
         
-    int charToInt(string operand, int index, int array[]) {
+    int charToInt(string operand, int index) {
         string registeryIndexString(1, operand[index]); //convert a char that was pulled from a string into a string
         int registeryIndex = stoi(registeryIndexString); //convert the string to an integer
         return registeryIndex;
     }
 
 
-};
+}; // i tot qwe doingcodde review nt ocin gcidoing

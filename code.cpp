@@ -16,6 +16,7 @@ int registers[REG_SIZE] = {0}; // Initializing registers with zeros
 void reading();
 void MemAndReg();
 
+
 void MemAndReg() {
 
     // Print Registers
@@ -51,10 +52,14 @@ void reading(){
     else{
         // Create a text string, which is used to output the text file
         string line;
-        const string move = "MOV";
-        const string add = "ADD";
-        const string mul = "MUL";
-        const string store = "STORE";
+        const string MOVE = "MOV";
+        const string ADD = "ADD";
+        const string MUL = "MUL";
+        const string SHIFT_LEFT = "SHL";
+        const string SHIFT_RIGHT = "SHR";
+        const string ROTATE_LEFT = "ROL";
+        const string ROTATE_RIGHT = "ROR";
+        const string STORE = "STORE";
 
         // Read from the text file
         ifstream datafile("data.asm");
@@ -63,19 +68,35 @@ void reading(){
         // Use loop to read file line by line
         while (getline (datafile, line)) {
             // If found keyword in string, then execute command
-            if (line.find(move) != string::npos) {
+            if (line.find(MOVE) != string::npos) {
                 cout << "MOV found" << endl;
                 pc += 1;
             }
-            else if (line.find(add) != string::npos) {
+            else if (line.find(ADD) != string::npos) {
                 cout << "ADD found" << endl; 
                 pc += 1;
             }
-            else if (line.find(mul) != string::npos) {
+            else if (line.find(MUL) != string::npos) {
                 cout << "MUL found" << endl;
                 pc += 1;
             }
-            else if (line.find(store) != string::npos) {
+            else if (line.find(SHIFT_LEFT) != string::npos) {
+                cout << "MUL found" << endl;
+                pc += 1;
+            }
+            else if (line.find(SHIFT_RIGHT) != string::npos) {
+                cout << "MUL found" << endl;
+                pc += 1;
+            }
+             else if (line.find(ROTATE_LEFT) != string::npos) {
+                cout << "MUL found" << endl;
+                pc += 1;
+            }           
+            else if (line.find(ROTATE_RIGHT) != string::npos) {
+                cout << "MUL found" << endl;
+                pc += 1;
+            }
+            else if (line.find(STORE) != string::npos) {
                 cout << "STORE found" << endl;
                 pc += 1;
             }
