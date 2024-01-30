@@ -116,5 +116,15 @@ class helper {
         return registeryIndex;
     }
 
+    void printMEM(int * array) {
+        int index = 0;
+        for (int i = 0; i < 7; i ++) {
+            for (int j = 0; j < 7; j++) {
+                cout << setw(5) << array[index];
+                index ++;
+        } cout << endl;
+    }
+    }
+
 
 }; // i tot qwe doingcodde review nt ocin gcidoing

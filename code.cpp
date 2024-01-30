@@ -20,11 +20,11 @@ int main () {
 
     int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
-    {0, 0, 0, 0, 0, 0, 0, 
+    {0, 0, 8, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, -122, 0,
      0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 3, 0,
+     0, 0, 106, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,};
     string error;
@@ -136,18 +136,26 @@ int main () {
 
                 registryIndex = h.charToInt(firstOperand, 1);
 
-                if (operation == LOAD) {
+                if (operation == LOAD)
                     registers[registryIndex] = secondOperandValue;
-                } else if (operation == STORE) {
+                else if (operation == STORE) {
                     if (h.isNumber(secondOperand))
                         MEM[stoi(secondOperand)] = registers[registryIndex]; 
                     else if (h.hasSquaredBrackets(secondOperand))
-                        registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
+                        memoryIndex = registers[h.charToInt(secondOperand, 2)];
+                        if (!(memoryIndex > 64 || memoryIndex < 0))
+                            MEM[memoryIndex] = registers[registryIndex];
+                        else {
+                            h.display("Invalid memory address");
+                            return 0;
+                        }
                 }
             }
 
         }
     }
+
+    h.printMEM(MEM);
 
 } 
 
