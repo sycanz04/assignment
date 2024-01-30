@@ -1,96 +1,192 @@
 #include <iostream>
 #include <fstream>
-#include <string> 
-#include <iomanip>
+#include <string>
+#include "utility.cpp"
 using namespace std;
 
-//Memory and register sizes
-const int MEM_SIZE = 8;
-const int REG_SIZE = 8;
-
-//Initialising 2D and 1D array for memory and registers respectively
-int memory[MEM_SIZE] = {0}; // Initializing memory with zeros
-int registers[REG_SIZE] = {0}; // Initializing registers with zeros
-
 //Function prototypes
-void reading();
-void MemAndReg();
+bool reading();
+bool reg_num(string first);
+bool num(string second);
 
-void MemAndReg() {
+//Defining targeted strings for reading
+const string MOVE = "MOV";
+const string ADD = "ADD";
+const string MUL = "MUL";
+const string SHIFT_LEFT = "SHL";
+const string SHIFT_RIGHT = "SHR";
+const string ROTATE_LEFT = "ROL";
+const string ROTATE_RIGHT = "ROR";
+const string LOAD = "LOAD";
+const string STORE = "STORE";
 
-    // Print Registers
-    cout << "Registers:" << endl;
-    for (int i = 0; i < REG_SIZE; ++i) {
-        cout << "R" << i << ": " << setw(4) << registers[i] << "   ";
-    }
-    cout << endl << endl;
+const int INT_BITS = 8;
 
-    // Print Memory
-    cout << "Memory:" << endl;
-    for (int i = 0; i < MEM_SIZE; ++i) {
-        for (int j = 0; j < MEM_SIZE; ++j) {
-            cout << setw(4) << memory[i] << " ";
-        }
-        cout << endl;
-    }
-}
+//Defining error variable and utility shortcut
+string error;
+helper h;
 
+// Defining array sizes for register and mem
+    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+    int MEM[64] = 
+    {0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0, 
+     0, 0, 0, 0, 0, 0, 0, 0};
 
-//Read file function
-void reading(){
+//Function to check if "data.asm" file exists. If not, create a new file
+bool reading()
+{
     // Check if the file "data.txt" exists
     ifstream check("data.asm");
     bool exists = check.good();
     check.close();
 
-    // If it doesn't exists, create a new text file
-    if (!exists){
+    if (!exists)
+    {
+        h.display("data.asm file not found, new file created");
         ofstream datafile("data.asm");
+        return false;
     }
 
-    else{
-        // Create a text string, which is used to output the text file
-        string line;
-        const string move = "MOV";
-        const string add = "ADD";
-        const string mul = "MUL";
-        const string store = "STORE";
+    else
+    {
+        return true;
+    }
+}
 
-        // Read from the text file
-        ifstream datafile("data.asm");
+//Test if register and number is the right data type
+bool reg(string first)
+{
+    // Test if first operand is a register, else quit the program
+    if (!h.isRegister(first, error)) {
+        h.display(error);
+        exit(1);
+    }
+}
 
-        int pc = 0;
-        // Use loop to read file line by line
-        while (getline (datafile, line)) {
-            // If found keyword in string, then execute command
-            if (line.find(move) != string::npos) {
-                cout << "MOV found" << endl;
-                pc += 1;
-            }
-            else if (line.find(add) != string::npos) {
-                cout << "ADD found" << endl; 
-                pc += 1;
-            }
-            else if (line.find(mul) != string::npos) {
-                cout << "MUL found" << endl;
-                pc += 1;
-            }
-            else if (line.find(store) != string::npos) {
-                cout << "STORE found" << endl;
-                pc += 1;
-            }
-            else {
-                cout << "No commands found" << endl;
-            }
-        }
-        cout << "Program Counter: " << pc << endl;
+bool num(string second)
+{
+    // Test if second operand is a number, else quit the program
+    if (!h.isNumber(second)) {
+        h.display("Compile error: second operand is missing or is not a number.");
+        exit(1);
     }
 }
 
 int main()
 {
-    reading();
-    MemAndReg();
+    bool filefound = reading();
+
+    if (filefound)
+    {
+        // Create a text string, which is used to output the text file
+        string line;
+
+        string operation = "";
+        string firstOperand = "";
+        string secondOperand = "";
+
+        // Read from the text file
+        ifstream datafile("data.asm");
+        // Use loop to read file line by line
+        while (getline(datafile, line)) 
+        {
+
+            if (line.length() == 0)
+                continue;
+
+            string *result = h.parseLine(line); // expects an array with 3 values
+
+            if (result == NULL) 
+            {
+                cout << "Compile error: Invalid line: " + line << endl;
+                return 0;
+            }
+
+            operation = result[0];
+            firstOperand = result[1];
+            secondOperand = result[2];
+
+            int registryIndex = 0;
+            int registryValue = 0;
+
+            h.display("Operation: " + result[0]);
+            h.display("first param: " + result[1]);
+            h.display("second param: " + result[2]);
+            h.display("-----------");
+            if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT ||
+                operation == ROTATE_RIGHT) {
+
+                int operand2Int;
+                int removedBracketsIndex;
+
+                reg(firstOperand);
+                num(secondOperand);
+
+                operand2Int = stoi(secondOperand);              // Converting second operand (shift value) into integer
+                registryIndex = h.charToInt(firstOperand, 1);   // Obtaining the index
+                registryValue = registers[registryIndex];       // Obtaining the register array value through the index
+
+                char outcome = '\0';
+
+                if (operation == SHIFT_LEFT) {
+                    outcome = registryValue << operand2Int;
+                } else if (operation == SHIFT_RIGHT) {
+                    outcome = registryValue >> operand2Int;
+                } else if (operation == ROTATE_LEFT) {
+                    outcome = (registryValue << operand2Int) | (registryValue >> (INT_BITS - operand2Int));
+                } else if (operation == ROTATE_RIGHT) {
+                    outcome = (registryValue >> operand2Int) | (registryValue << (INT_BITS - operand2Int));
+                }
+
+                registryValue = outcome; // Assign the character to the integer so that it will show when printing out
+                registers[registryIndex] = registryValue; // Store the value back into the register
+
+            }
+            
+            else if (operation == LOAD || operation == STORE) 
+            {
+                reg(firstOperand);
+
+                int secondOperandValue = 0;
+                int memoryIndex = 0;
+
+                if (h.isNumber(secondOperand))
+                { // if it is a memory address
+                    // TODO: check if memory index is out of range(between 0 and 63)
+                    memoryIndex = stoi(secondOperand);
+                    secondOperandValue = MEM[memoryIndex];  // Obtaining the memory value of the second operand
+                } else if (h.hasSquaredBrackets(secondOperand)) { // if it is a register
+                    registryIndex = h.charToInt(secondOperand, 2);
+                    secondOperandValue = registers[registryIndex];  // Obtaining the register value of the second operand
+                } else {
+                    h.display("Compile error: second operand is not in the format [Rddr]");
+                    return 0;
+                }
+
+                registryIndex = h.charToInt(firstOperand, 1);
+
+                if (operation == LOAD) {
+                    registers[registryIndex] = secondOperandValue;
+                } else if (operation == STORE) {
+                    if (h.isNumber(secondOperand))
+                        MEM[stoi(secondOperand)] = registers[registryIndex];
+                    else if (h.hasSquaredBrackets(secondOperand))
+                        registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
+                }
+            }
+        }
+    }
+
+    else
+    {
+        return 1;
+    }
 
     return 0;
 }
