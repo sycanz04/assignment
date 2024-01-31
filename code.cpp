@@ -143,7 +143,7 @@ int main () {
                         MEM[stoi(secondOperand)] = registers[registryIndex]; 
                     else if (h.hasSquaredBrackets(secondOperand))
                         memoryIndex = registers[h.charToInt(secondOperand, 2)];
-                        if (!(memoryIndex > 64 || memoryIndex < 0))
+                        if (!(memoryIndex > 63 || memoryIndex < 0))
                             MEM[memoryIndex] = registers[registryIndex];
                         else {
                             h.display("Invalid memory address");
@@ -158,4 +158,3 @@ int main () {
     h.printMEM(MEM);
 
 } 
-

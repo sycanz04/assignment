@@ -14,7 +14,7 @@ class helper {
         result[2] = "";
         string temp = ""; 
     
-        for (auto letter: line) {
+        for (auto letter : line) {
                     if (letter == ',' && result[0].length() == 0) return NULL; // invalid line, return empty array 
 
                     if (letter == '/') 
@@ -122,8 +122,9 @@ class helper {
             for (int j = 0; j < 7; j++) {
                 cout << setw(5) << array[index];
                 index ++;
-        } cout << endl;
-    }
+            } cout << endl;
+        }
+
     }
 
 
