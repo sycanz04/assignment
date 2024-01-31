@@ -82,6 +82,9 @@ bool num(string second)
 
 int main()
 {
+    //Declare program counter
+    int pc = 0;
+
     bool filefound = reading();
 
     if (filefound)
@@ -98,7 +101,6 @@ int main()
         // Use loop to read file line by line
         while (getline(datafile, line)) 
         {
-
             if (line.length() == 0)
                 continue;
 
@@ -206,7 +208,10 @@ int main()
                     }
                 }
             }
-        }
+            pc += 1;
+            cout << "Program Counter: " << pc << endl;;
+        } 
+
         for (int i = 0; i < 7; ++i)
         {
             cout << "R" << i << ": " << registers[i] << " ";
