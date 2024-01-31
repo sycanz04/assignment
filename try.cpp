@@ -6,7 +6,7 @@ using namespace std;
 
 //Function prototypes
 bool reading();
-bool reg_num(string first);
+bool reg(string first);
 bool num(string second);
 
 //Defining targeted strings for reading
@@ -27,16 +27,17 @@ string error;
 helper h;
 
 // Defining array sizes for register and mem
-    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
-    int MEM[64] = 
-    {0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, 0, 0, 0};
+int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+int MEM[64] = 
+{0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 4, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0};
+
 
 //Function to check if "data.asm" file exists. If not, create a new file
 bool reading()
@@ -59,7 +60,7 @@ bool reading()
     }
 }
 
-//Test if register and number is the right data type
+//Test if parameter is a register
 bool reg(string first)
 {
     // Test if first operand is a register, else quit the program
@@ -69,6 +70,7 @@ bool reg(string first)
     }
 }
 
+//Test if parameter is a number
 bool num(string second)
 {
     // Test if second operand is a number, else quit the program
@@ -151,42 +153,69 @@ int main()
             
             else if (operation == LOAD || operation == STORE) 
             {
+                //Check if operand is register
                 reg(firstOperand);
 
-                int secondOperandValue = 0;
+                int new2operand = stoi(secondOperand);   //Get input value to store in registers
                 int memoryIndex = 0;
 
                 if (h.isNumber(secondOperand))
                 { // if it is a memory address
                     // TODO: check if memory index is out of range(between 0 and 63)
-                    memoryIndex = stoi(secondOperand);
-                    secondOperandValue = MEM[memoryIndex];  // Obtaining the memory value of the second operand
-                } else if (h.hasSquaredBrackets(secondOperand)) { // if it is a register
+                    int memoryIndex = stoi(secondOperand);
+                    new2operand = MEM[memoryIndex];  // Obtaining the memory value of the second operand
+                }
+                
+                else if (h.hasSquaredBrackets(secondOperand))
+                { // if it is a register
                     registryIndex = h.charToInt(secondOperand, 2);
-                    secondOperandValue = registers[registryIndex];  // Obtaining the register value of the second operand
-                } else {
+                    new2operand = registers[registryIndex];  // Obtaining the register value of the second operand
+                }
+
+                else
+                {
                     h.display("Compile error: second operand is not in the format [Rddr]");
                     return 0;
                 }
 
                 registryIndex = h.charToInt(firstOperand, 1);
 
-                if (operation == LOAD) {
-                    registers[registryIndex] = secondOperandValue;
-                } else if (operation == STORE) {
+                if (operation == LOAD)
+                {
+                    cout << "Loading value: " << result[2] << " into R" << registryIndex << endl << endl;
+                    registers[registryIndex] = stoi(result[2]);
+                } 
+                else if (operation == STORE)
+                {
                     if (h.isNumber(secondOperand))
+                    {
                         MEM[stoi(secondOperand)] = registers[registryIndex];
+                    }
                     else if (h.hasSquaredBrackets(secondOperand))
-                        registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
+                    {
+                        memoryIndex = registers[h.charToInt(secondOperand, 2)];
+                        if (!(memoryIndex > 64 || memoryIndex < 0))
+                            {
+                                MEM[memoryIndex] = registers[registryIndex];
+                            }
+                        else
+                        {
+                            h.display("Invalid memory address");
+                            return 0;
+                        }
+                    }
                 }
             }
         }
-    }
+        for (int i = 0; i < 7; ++i)
+        {
+            cout << "R" << i << ": " << registers[i] << " ";
+        }
+        cout << endl;
 
-    else
-    {
-        return 1;
-    }
 
+        // h.printMEM(MEM);
+    }
+    
     return 0;
 }
