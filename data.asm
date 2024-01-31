@@ -1,1 +1,1 @@
-LOAD R0, 28
+STORE R1, [R2]

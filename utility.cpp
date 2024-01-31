@@ -117,4 +117,12 @@ class helper {
         }
     }
 
+    bool checkMEMIndex(int memoryIndex)
+    {
+        if (memoryIndex > 63 || memoryIndex < 0)
+            return true;
+        else 
+            return false;
+    }
+
 }; // i tot qwe doingcodde review nt ocin gcidoing
