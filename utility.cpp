@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string> 
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 class helper {
@@ -115,6 +116,17 @@ class helper {
         int registeryIndex = stoi(registeryIndexString); //convert the string to an integer
         return registeryIndex;
     }
+
+    void printMEM(int * array) {
+        int index = 0;
+        for (int i = 0; i < 8; i ++) {
+            for (int j = 0; j < 8; j++) {
+                cout << setw(5) << array[index];
+                index ++;
+            } cout << endl;
+        }
+    }
+    
 
 
 }; // i tot qwe doingcodde review nt ocin gcidoing
