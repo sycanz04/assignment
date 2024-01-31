@@ -218,9 +218,8 @@ int main()
         }
         cout << endl;
 
-
-        // h.printMEM(MEM);
     }
-    
+    h.printMEM(MEM);
+
     return 0;
 }
