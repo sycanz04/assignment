@@ -1,1 +1,1 @@
-STORE R4, 63
+LOAD R0, 28

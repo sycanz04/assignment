@@ -59,19 +59,12 @@ class helper {
         return true;
     }
 
-    bool checkValue (string value, string& error) {     //can use for in, out, add, mul, div but not tested
+    bool checkValue (int number) {     //can use for in, out, add, mul, div but not tested
 
-        if (!isNumber(value)) {
-            return false;
-        }
-
-        int number = stoi(value); 
         if (number > 127 || number < -128) {
-            error = "value out of range";
             return false;
         }
         return true;
-
     }
 
     bool isRegister(string value, string &error) {
