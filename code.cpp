@@ -31,7 +31,7 @@ string error;
 helper h;
 
 // Defining array sizes for register and mem
-int registers[7] = {0, 0, 100, 0, 62, 0, 0}; // R0 to R6
+int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
 int MEM[64] = 
 {0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -40,7 +40,7 @@ int MEM[64] =
 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 8, 34};
+0, 0, 0, 0, 0, 0, 0, 0};
 
 
 //Function to check if "data.asm" file exists. If not, create a new file
@@ -181,21 +181,30 @@ int main()
                 int new2operand = 0;   //Get value to store in registers
                 int memoryIndex = 0;
 
-                if (h.hasSquaredBrackets(secondOperand))
-                    int memoryIndex = registers[h.charToInt(secondOperand, 2)];
-                else if (h.isNumber(secondOperand))
-                    memoryIndex = stoi(secondOperand);
-
-                if (memoryIndex > 63 || memoryIndex < 0)
+                if (h.hasSquaredBrackets(secondOperand)) 
                 {
-                    h.display("Invalid memory address");
-                    return 0;
+                    int memoryIndex = registers[h.charToInt(secondOperand, 2)];
+                    if (h.checkMEMIndex(memoryIndex)) 
+                    {
+                        cout << "Invalid memory index\n";
+                        return 0;
+                    }
+                }
+                else if (h.isNumber(secondOperand))
+                {
+                    memoryIndex = stoi(secondOperand);
+                    if (h.checkMEMIndex(memoryIndex)) 
+                    {
+                        cout << "Invalid memory index\n";
+                        return 0;
+                    }
                 }
 
+
                 if (h.isNumber(secondOperand)) // if it is a memory address
-                    new2operand = MEM[memoryIndex];  // Obtaining the memory value of the second operand
+                    new2operand = MEM[stoi(secondOperand)];  // Obtaining the memory value of the second operand
                 else if (h.hasSquaredBrackets(secondOperand)) // if it is a register
-                    new2operand = MEM[memoryIndex];  // Obtaining the register value of the second operand
+                    new2operand = MEM[registers[h.charToInt(secondOperand, 2)]];  // Obtaining the register value of the second operand
                 else
                 {
                     h.display("Compile error: second operand is not in the format [Rddr]");
@@ -206,7 +215,7 @@ int main()
 
                 if (operation == LOAD)
                 {
-                    cout << "Loading value: " << result[2] << " into R" << registryIndex << endl << endl;
+                    cout << "Loading value: " << new2operand << " into R" << registryIndex << endl << endl;
                     registers[registryIndex] = new2operand; // storing 
                 } 
                 else if (operation == STORE)
