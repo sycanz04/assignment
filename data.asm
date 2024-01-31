@@ -1,1 +1,1 @@
-STORE R0, [R2]
+STORE R4, 63

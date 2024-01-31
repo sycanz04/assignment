@@ -20,7 +20,7 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 20, 30, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 20, 30, 0, 59, 0, 0}; // R0 to R6
     int MEM[64] = 
     {0, 0, 0, 0, 0, 0, 0, 
      0, 0, 0, 0, 0, 0, 0,
@@ -145,7 +145,7 @@ int main () {
                         MEM[stoi(secondOperand)] = registers[registryIndex]; 
                     else if (h.hasSquaredBrackets(secondOperand)) {
                         memoryIndex = registers[h.charToInt(secondOperand, 2)];
-                        if (!(memoryIndex > 63 || memoryIndex < 0))
+                        if (!(memoryIndex > 63 && memoryIndex < 0))
                             MEM[memoryIndex] = registers[registryIndex];
                         else {
                             h.display("Invalid memory address");
@@ -183,7 +183,9 @@ int main () {
         }
     }
 
-    // h.printMEM(MEM);
+    h.printMEM(MEM);
+    cout << "__________" << endl;
+    cout << "Registers: ";
     for (int &val : registers)
         cout << val << ' ';
         cout << endl;

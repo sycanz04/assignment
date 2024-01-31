@@ -8,17 +8,15 @@ class helper {
 
     public:
     string* parseLine(string line) {
-        static string result[3]; // 1 = command, 2 = op1, ""3 = op2
+        static string result[3]; // 0 = command, 1 = op1, 2 = op2
         result[0] = "";
         result[1] = "";
         result[2] = "";
         string temp = ""; 
     
         for (auto letter : line) {
-                    if (letter == ',' && result[0].length() == 0) return NULL; // invalid line, return empty array 
-
-                    if (letter == '/') 
-                        break;
+                    if (letter == ',' && result[0].length() == 0) 
+                        return NULL; // invalid line, return empty array 
 
                     if (letter != ' ' && letter != ',') {
                         temp += toupper(letter);
@@ -118,14 +116,12 @@ class helper {
 
     void printMEM(int * array) {
         int index = 0;
-        for (int i = 0; i < 7; i ++) {
-            for (int j = 0; j < 7; j++) {
+        for (int i = 0; i < 8; i ++) {
+            for (int j = 0; j < 8; j++) {
                 cout << setw(5) << array[index];
                 index ++;
             } cout << endl;
         }
-
     }
-
 
 }; // i tot qwe doingcodde review nt ocin gcidoing
