@@ -8,7 +8,9 @@ int main () {
 
     const string MOVE = "MOV";
     const string ADD = "ADD";
+    const string SUB = "SUB";
     const string MUL = "MUL";
+    const string DIV = "DIV";
     const string SHIFT_LEFT = "SHL";
     const string SHIFT_RIGHT = "SHR";
     const string ROTATE_LEFT = "ROL";
@@ -18,7 +20,7 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 98, 0, 22, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 20, 30, 0, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
     {0, 0, 0, 0, 0, 0, 0, 
      0, 0, 0, 0, 0, 0, 0,
@@ -151,11 +153,39 @@ int main () {
                         }
                     }
                 }
+            } else if (operation == ADD || operation == SUB) {
+                
+                int outcome;
+
+                //Test if first operand is a register, else quits program
+                if (!h.isRegister(firstOperand, error)) {
+                    h.display(error);
+                    return 0; 
+                }
+
+                // Get the index from both registers
+                int operandIndex1 = h.charToInt(firstOperand, 1);
+                int operandIndex2 = h.charToInt(secondOperand, 1);
+
+                // Get the value from the registers through the index 
+                int firstOperandValue = registers[operandIndex1];
+                int secondOperandValue = registers[operandIndex2];
+
+                if (operation == ADD) {
+                    outcome = firstOperandValue + secondOperandValue;
+                } else if (operation == SUB) {
+
+                }
+
+                registers[operandIndex2] = outcome; // assign the operand 2 the value after arithmetic
             }
 
         }
     }
 
-    h.printMEM(MEM);
+    // h.printMEM(MEM);
+    for (int &val : registers)
+        cout << val << ' ';
+        cout << endl;
 
 } 
