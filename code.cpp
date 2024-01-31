@@ -9,20 +9,21 @@ bool reading();
 bool reg(string first);
 bool num(string second);
 
+const string INPUT = "IN";
+const string OUTPUT = "OUT";
 const string MOVE = "MOV";
 const string ADD = "ADD";
-const string SUB = "SUB";
-const string MUL = "MUL";
-const string DIV = "DIV";
-const string SHIFT_LEFT = "SHL";
-const string SHIFT_RIGHT = "SHR";
+const string SUBTRACT = "SUB";
+const string MULTIPLY = "MUL";
+const string DIVIDE = "DIV";
+const string INCREMENT = "INC";
+const string DECREMENT = "DEC";
 const string ROTATE_LEFT = "ROL";
 const string ROTATE_RIGHT = "ROR";
+const string SHIFT_LEFT = "SHL";
+const string SHIFT_RIGHT = "SHR";
 const string LOAD = "LOAD";
 const string STORE = "STORE";
-const string IN = "IN";
-const string OUT = "OUT";
-const string MOV = "MOV";
 
 const int INT_BITS = 8;
 
@@ -42,7 +43,6 @@ int MEM[64] =
 0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0};
 
-
 //Function to check if "data.asm" file exists. If not, create a new file
 bool reading()
 {
@@ -56,19 +56,15 @@ bool reading()
         h.display("data.asm file not found, new file created");
         ofstream datafile("data.asm");
         return false;
-    }
-
-    else
-    {
-        return true;
-    }
+    } return true;
 }
 
 //Test if parameter is a register
 bool reg(string first)
 {
     // Test if first operand is a register, else quit the program
-    if (!h.isRegister(first, error)) {
+    if (!h.isRegister(first, error)) 
+    {
         h.display(error);
         exit(1);
     } return true;
@@ -78,7 +74,8 @@ bool reg(string first)
 bool num(string second)
 {
     // Test if second operand is a number, else quit the program
-    if (!h.isNumber(second)) {
+    if (!h.isNumber(second)) 
+    {
         h.display("Compile error: second operand is missing or is not a number.");
         exit(1);
     } return true;
@@ -87,7 +84,7 @@ bool num(string second)
 int main()
 {
     //Declare program counter
-    int pc = 0;
+    int PC = 0;
     // Declare OF and UF flag
     int OF = 0;
     int UF = 0;
@@ -122,20 +119,22 @@ int main()
             operation = result[0];
             firstOperand = result[1];
             secondOperand = result[2];
-
-            int registryIndex = 0;
-            int registryValue = 0;
             int firstOperandIndex, secondOperandIndex;
             if (h.hasSquaredBrackets(firstOperand))
                 firstOperandIndex = h.charToInt(firstOperand, 2);
-            else 
+            else if (h.isRegister(firstOperand, error))
                 firstOperandIndex = h.charToInt(firstOperand, 1);
+            else
+                firstOperandIndex = 0;
 
-            if (secondOperand != "\0"){
+            if (secondOperand != "\0")
+            {
                 if (h.hasSquaredBrackets(secondOperand))
                     secondOperandIndex = h.charToInt(secondOperand, 2);
-                else
+                else if (h.isRegister(secondOperand, error))
                     secondOperandIndex = h.charToInt(secondOperand, 1);
+                else
+                    secondOperandIndex = 0;
             }
 
             h.display("Operation: " + result[0]);
@@ -144,53 +143,40 @@ int main()
             h.display("-----------");
            
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT ||
-                operation == ROTATE_RIGHT) {
-
-                int operand2Int;
-                int removedBracketsIndex;
-
+                operation == ROTATE_RIGHT) 
+            {
                 reg(firstOperand);
                 num(secondOperand);
 
-                operand2Int = stoi(secondOperand);              // Converting second operand (shift value) into integer
-                registryIndex = h.charToInt(firstOperand, 1);   // Obtaining the index
-                registryValue = registers[registryIndex];       // Obtaining the register array value through the index
-
-                char outcome = '\0';
-
-                if (operation == SHIFT_LEFT) {
-                    outcome = registryValue << operand2Int;
-                } else if (operation == SHIFT_RIGHT) {
-                    outcome = registryValue >> operand2Int;
-                } else if (operation == ROTATE_LEFT) {
-                    outcome = (registryValue << operand2Int) | (registryValue >> (INT_BITS - operand2Int));
-                } else if (operation == ROTATE_RIGHT) {
-                    outcome = (registryValue >> operand2Int) | (registryValue << (INT_BITS - operand2Int));
-                }
-
-                registryValue = outcome; // Assign the character to the integer so that it will show when printing out
-                registers[registryIndex] = registryValue; // Store the value back into the register
-
+                if (operation == SHIFT_LEFT) 
+                    registers[firstOperandIndex] = registers[firstOperandIndex] << stoi(secondOperand);
+                else if (operation == SHIFT_RIGHT)
+                    registers[firstOperandIndex] = registers[firstOperandIndex] >> stoi(secondOperand);
+                else if (operation == ROTATE_LEFT)
+                    registers[firstOperandIndex] = (registers[firstOperandIndex] << stoi(secondOperand)) | (registers[firstOperandIndex] >> (INT_BITS - stoi(secondOperand)));
+                else if (operation == ROTATE_RIGHT)
+                    registers[firstOperandIndex] = (registers[firstOperandIndex] >> stoi(secondOperand)) | (registers[firstOperandIndex] << (INT_BITS - stoi(secondOperand)));
             }
             
             else if (operation == LOAD || operation == STORE) 
             {
                 //Check if operand is register
                 reg(firstOperand);
+                
+                int memoryValue;   //Get value to store in registers
+                int memoryIndex;
 
-                int new2operand = 0;   //Get value to store in registers
-                int memoryIndex = 0;
-
-                if (h.hasSquaredBrackets(secondOperand)) 
+                if (h.hasSquaredBrackets(secondOperand)) // if it is a register
                 {
-                    int memoryIndex = registers[h.charToInt(secondOperand, 2)];
+                    memoryIndex = registers[secondOperandIndex];
                     if (h.checkMEMIndex(memoryIndex)) 
                     {
                         cout << "Invalid memory index\n";
                         return 0;
                     }
+                    memoryValue = MEM[memoryIndex]; // Obtaining the register value of the second operand
                 }
-                else if (h.isNumber(secondOperand))
+                else if (h.isNumber(secondOperand)) // if it is a memory address
                 {
                     memoryIndex = stoi(secondOperand);
                     if (h.checkMEMIndex(memoryIndex)) 
@@ -198,41 +184,35 @@ int main()
                         cout << "Invalid memory index\n";
                         return 0;
                     }
+                    memoryValue = MEM[memoryIndex]; // Obtaining the memory value of the second operand
                 }
-
-
-                if (h.isNumber(secondOperand)) // if it is a memory address
-                    new2operand = MEM[stoi(secondOperand)];  // Obtaining the memory value of the second operand
-                else if (h.hasSquaredBrackets(secondOperand)) // if it is a register
-                    new2operand = MEM[registers[h.charToInt(secondOperand, 2)]];  // Obtaining the register value of the second operand
                 else
                 {
                     h.display("Compile error: second operand is not in the format [Rddr]");
                     return 0;
                 }
 
-                registryIndex = h.charToInt(firstOperand, 1); // Getting the index of first operand
-
                 if (operation == LOAD)
                 {
-                    cout << "Loading value: " << new2operand << " into R" << registryIndex << endl << endl;
-                    registers[registryIndex] = new2operand; // storing 
+                    cout << "Loading value: " << memoryValue << " into R" << firstOperandIndex << endl << endl;
+                    registers[firstOperandIndex] = memoryValue; // storing 
                 } 
                 else if (operation == STORE)
                 {
                     if (h.isNumber(secondOperand))
-                        MEM[stoi(secondOperand)] = registers[h.charToInt(firstOperand, 1)];
+                        MEM[memoryIndex] = registers[firstOperandIndex];
                     else if (h.hasSquaredBrackets(secondOperand))
-                        MEM[registers[h.charToInt(secondOperand, 2)]] = registers[h.charToInt(firstOperand, 1)];
+                        MEM[secondOperandIndex] = registers[firstOperandIndex];
                 }
             }
 
-            else if  (operation == ADD || operation == SUB) {
-                
+            else if  (operation == ADD || operation == SUBTRACT) 
+            {
                 int outcome;
 
                 //Test if first operand is a register, else quits program
-                if (!h.isRegister(firstOperand, error)) {
+                if (!h.isRegister(firstOperand, error)) 
+                {
                     h.display(error);
                     return 0; 
                 }
@@ -245,46 +225,55 @@ int main()
                 int firstOperandValue = registers[operandIndex1];
                 int secondOperandValue = registers[operandIndex2];
 
-                if (operation == ADD) {
+                if (operation == ADD)
                     outcome = firstOperandValue + secondOperandValue;
-                } else if (operation == SUB) {
+                else if (operation == SUBTRACT)
                     outcome = firstOperandValue - secondOperandValue;
-                }
 
                 if (outcome > 127)
                     OF = 1;
                 else if (outcome < -128)
                     UF = 1;
 
-                
                 registers[operandIndex2] = outcome; // assign the operand 2 the value after arithmetic
             }
 
-            else if (operation == IN || operation == OUT){
-                if (operation == IN){
+            else if (operation == INPUT || operation == OUTPUT)
+            {
+                if (operation == INPUT)
+                {
                     int value;
                     cin >> value;
+
                     registers[firstOperandIndex] = value;
-                } else if (operation == OUT){
+                } 
+                else if (operation == OUTPUT)
                     cout << registers[firstOperandIndex] << endl;
-                }
-            } else if (operation == MOV){
-                if (firstOperand[0] == 'R'){
+            } 
+
+            else if (operation == MOVE)
+            {
+                if (firstOperand[0] == 'R')
                     registers[secondOperandIndex] = registers[firstOperandIndex];
-                } else if (h.hasSquaredBrackets(firstOperand)) {
+
+                else if (h.hasSquaredBrackets(firstOperand)) 
+                {
                     int memoryIndex = registers[firstOperandIndex];
+
                     if (!(memoryIndex > 63 && memoryIndex < 0))
                         registers[secondOperandIndex] = MEM[memoryIndex];
-                    else {
+                    else 
+                    {
                         h.display("Invalid memory address");
                         return 0;
                     }
-                } else
+                } 
+                else
                     registers[secondOperandIndex] = stoi(firstOperand);
             }
 
-            pc += 1;
-            cout << "Program Counter: " << pc << endl;
+            PC += 1;
+            cout << "Program Counter: " << PC << endl;
             cout << "Overflow Flag: " << OF << endl;
             cout << "Underflow Flag: " << UF << endl;
         } 
@@ -294,7 +283,6 @@ int main()
             cout << "R" << i << ": " << registers[i] << " ";
         }
         cout << endl;
-
 
         h.printMEM(MEM);
     }
