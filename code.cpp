@@ -18,13 +18,13 @@ int main () {
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+    int registers[7] = {0, 98, 0, 22, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
-    {0, 0, 8, 0, 0, 0, 0, 
-     0, 0, 0, 0, 0, -122, 0,
+    {0, 0, 0, 0, 0, 0, 0, 
      0, 0, 0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0, 3, 0,
-     0, 0, 106, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
+     0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,};
     string error;
@@ -141,7 +141,7 @@ int main () {
                 else if (operation == STORE) {
                     if (h.isNumber(secondOperand))
                         MEM[stoi(secondOperand)] = registers[registryIndex]; 
-                    else if (h.hasSquaredBrackets(secondOperand))
+                    else if (h.hasSquaredBrackets(secondOperand)) {
                         memoryIndex = registers[h.charToInt(secondOperand, 2)];
                         if (!(memoryIndex > 63 || memoryIndex < 0))
                             MEM[memoryIndex] = registers[registryIndex];
@@ -149,6 +149,7 @@ int main () {
                             h.display("Invalid memory address");
                             return 0;
                         }
+                    }
                 }
             }
 
