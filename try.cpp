@@ -12,6 +12,7 @@ bool num(string second);
 //Defining targeted strings for reading
 const string MOVE = "MOV";
 const string ADD = "ADD";
+const string SUB = "SUB";
 const string MUL = "MUL";
 const string SHIFT_LEFT = "SHL";
 const string SHIFT_RIGHT = "SHR";
@@ -27,7 +28,7 @@ string error;
 helper h;
 
 // Defining array sizes for register and mem
-int registers[7] = {0, 0, 0, 0, 0, 0, 0}; // R0 to R6
+int registers[7] = {0, 0, 100, 0, 0, 0, 0}; // R0 to R6
 int MEM[64] = 
 {0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -67,7 +68,7 @@ bool reg(string first)
     if (!h.isRegister(first, error)) {
         h.display(error);
         exit(1);
-    }
+    } return true;
 }
 
 //Test if parameter is a number
@@ -77,13 +78,16 @@ bool num(string second)
     if (!h.isNumber(second)) {
         h.display("Compile error: second operand is missing or is not a number.");
         exit(1);
-    }
+    } return true;
 }
 
 int main()
 {
     //Declare program counter
     int pc = 0;
+    // Declare OF and UF flag
+    int OF = 0;
+    int UF = 0;
 
     bool filefound = reading();
 
@@ -119,9 +123,9 @@ int main()
             int registryIndex = 0;
             int registryValue = 0;
 
-            h.display("Operation: " + result[0]);
-            h.display("first param: " + result[1]);
-            h.display("second param: " + result[2]);
+            // h.display("Operation: " + result[0]);
+            // h.display("first param: " + result[1]);
+            // h.display("second param: " + result[2]);
             h.display("-----------");
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT ||
                 operation == ROTATE_RIGHT) {
@@ -158,7 +162,7 @@ int main()
                 //Check if operand is register
                 reg(firstOperand);
 
-                int new2operand = stoi(secondOperand);   //Get input value to store in registers
+                int new2operand = 0;   //Get input value to store in registers
                 int memoryIndex = 0;
 
                 if (h.isNumber(secondOperand))
@@ -184,11 +188,12 @@ int main()
 
                 if (operation == LOAD)
                 {
-                    cout << "Loading value: " << result[2] << " into R" << registryIndex << endl << endl;
-                    registers[registryIndex] = stoi(result[2]);
+                    cout << "Loading value: " << result[2] << " into R" << registryIndex << endl;
+                    registers[registryIndex] = new2operand;
                 } 
                 else if (operation == STORE)
                 {
+                    cout << "Storing value: R" << registryIndex << " into address " << result[2] << endl;
                     if (h.isNumber(secondOperand))
                     {
                         MEM[stoi(secondOperand)] = registers[registryIndex];
@@ -204,12 +209,46 @@ int main()
                         {
                             h.display("Invalid memory address");
                             return 0;
-                        }
+                        } 
                     }
                 }
             }
+
+            else if  (operation == ADD || operation == SUB) {
+                
+                int outcome;
+
+                //Test if first operand is a register, else quits program
+                if (!h.isRegister(firstOperand, error)) {
+                    h.display(error);
+                    return 0; 
+                }
+
+                // Get the index from both registers
+                int operandIndex1 = h.charToInt(firstOperand, 1);
+                int operandIndex2 = h.charToInt(secondOperand, 1);
+
+                // Get the value from the registers through the index 
+                int firstOperandValue = registers[operandIndex1];
+                int secondOperandValue = registers[operandIndex2];
+
+                if (operation == ADD) {
+                    outcome = firstOperandValue + secondOperandValue;
+                } else if (operation == SUB) {
+                    outcome = firstOperandValue - secondOperandValue;
+                }
+
+                if (outcome > 127)
+                    OF = 1;
+                else if (outcome < -128)
+                    UF = 1;
+
+                registers[operandIndex2] = outcome; // assign the operand 2 the value after arithmetic
+            }
+
             pc += 1;
-            cout << "Program Counter: " << pc << endl;;
+            cout << "Program Counter: " << pc << endl;
+            cout << "OF/UF: " << OF << ", " << UF << endl << endl;
         } 
 
         for (int i = 0; i < 7; ++i)
@@ -218,8 +257,9 @@ int main()
         }
         cout << endl;
 
-    }
-    h.printMEM(MEM);
 
+        h.printMEM(MEM);
+    }
+    
     return 0;
 }

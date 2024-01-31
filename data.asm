@@ -1,4 +1,4 @@
-    LOAD R2, 6
-    STORE R2, 63
-    LOAD R3, 9
-    STORE R3, 7
+LOAD R0, 28
+LOAD R1, [R2]
+STORE R0, 14
+STORE R1, [R0]
