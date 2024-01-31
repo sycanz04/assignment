@@ -14,6 +14,7 @@ const string MOVE = "MOV";
 const string ADD = "ADD";
 const string SUB = "SUB";
 const string MUL = "MUL";
+const string DIV = "DIV";
 const string SHIFT_LEFT = "SHL";
 const string SHIFT_RIGHT = "SHR";
 const string ROTATE_LEFT = "ROL";
@@ -28,7 +29,7 @@ string error;
 helper h;
 
 // Defining array sizes for register and mem
-int registers[7] = {0, 0, 100, 0, 0, 0, 0}; // R0 to R6
+int registers[7] = {0, 0, -100, 0, 0, 0, 0}; // R0 to R6
 int MEM[64] = 
 {0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -232,11 +233,27 @@ int main()
                 int firstOperandValue = registers[operandIndex1];
                 int secondOperandValue = registers[operandIndex2];
 
-                if (operation == ADD) {
+                if (operation == ADD) 
+                {
+                    cout << "Adding value " << firstOperandValue << " to value " << secondOperandValue << endl;
                     outcome = firstOperandValue + secondOperandValue;
-                } else if (operation == SUB) {
-                    outcome = firstOperandValue - secondOperandValue;
                 }
+                else if (operation == SUB) 
+                {
+                    cout << "Subtracting value " << secondOperandValue << " with value " << firstOperandValue << endl;
+                    outcome = secondOperandValue - firstOperandValue;
+                }
+                else if (operation == MUL)
+                {
+                    cout << "Multiplying value" << secondOperandValue << " with value " << firstOperandValue << endl;
+                    outcome = secondOperandValue * firstOperandValue;
+                }
+                else if (operation == DIV)
+                {
+                    cout << "Dividing value " << secondOperandValue << " wtih value " << firstOperandValue << endl;
+                    outcome = secondOperandValue / firstOperandValue;
+                }
+
 
                 if (outcome > 127)
                     OF = 1;
