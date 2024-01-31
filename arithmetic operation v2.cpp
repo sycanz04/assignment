@@ -12,6 +12,8 @@ int main()
     const string SUB = "SUB";
     const string MUL = "MUL";
     const string DIV = "DIV";
+    const string INC = "INC";
+    const string Dec = "Dec";
     const string SHIFT_LEFT = "SHL";
     const string SHIFT_RIGHT = "SHR";
     const string ROTATE_LEFT = "ROL";
@@ -21,7 +23,7 @@ int main()
 
     const int INT_BITS = 8;
 
-    int registers[7] = {0, 0, 20, 128, 10, 44, 30}; // R0 to R6
+    int registers[7] = {0, 10, 20, 128, 10, 44, 30}; // R0 to R6
     int MEM[64] =
     {0, 0, 0, 0, 0, 0, 55, 
      0, 0, 0, 0, 0, 0, 0,
@@ -83,7 +85,7 @@ int main()
             int secondValue = 0;
 
             if (operation == ADD || operation == SUB || operation == MUL ||
-                operation == DIV)
+                operation == DIV || operation == INC || operation == Dec)
             {
 
                 int outcome;
@@ -116,41 +118,21 @@ int main()
                     cout << "Dividing the value of "  << secondOperandValue << " by " << firstOperandValue << endl;
                     outcome = firstOperandValue / secondOperandValue;
                 }
+                else if (operation == INC)
+                {
+                    cout << "Add 1 to " << secondOperandValue << endl;
+                    outcome = secondOperandValue++ ;
+                }
+                else if (operation == Dec)
+                {
+                    cout << "Subtract 1 from " << secondOperandValue << endl;
+                    outcome = secondOperandValue-- ;
+
+                }
 
                 registers[operandIndex2] = outcome; // assign the operand 2 the value after arithmetic
-
-                // if (!h.isRegister(firstOperand, error))
-                // {
-                //     h.display(error);
-                //     return 0; // DISCUSS
-                // }
-
-                // if (!h.isRegister(secondOperand, error))
-                // {
-                //     h.display("Compile error: second operand is missing or is not a register.");
-                //     return 0;
-                // }
-
-                // std::string input = secondOperand;
-
-                // char character = input[0];
-                // size_t numericPartStart = 0;
-
-                // // Find the position of the first digit in the string
-                // for (size_t i = 1; i < input.length(); ++i)
-                // {
-                //     if (isdigit(input[i]))
-                //     {
-                //         numericPartStart = i;
-                //         break;
-                //     }
-                // }
-
-                // // Extract the numeric part and convert it to an integer
-                // std::string numericPart = input.substr(numericPartStart);
-                // int numericValue = std::stoi(numericPart);
-
                 
+
 
                 return 0;
             }
