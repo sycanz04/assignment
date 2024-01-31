@@ -71,13 +71,25 @@ int main () {
 
             int registryIndex = 0;
             int registryValue = 0;
+            int firstOperandIndex, secondOperandIndex;
+            if (h.hasSquaredBrackets(firstOperand))
+                firstOperandIndex = h.charToInt(firstOperand, 2);
+            else 
+                firstOperandIndex = h.charToInt(firstOperand, 1);
+
+            if (secondOperand != "\0"){
+                if (h.hasSquaredBrackets(secondOperand))
+                    secondOperandIndex = h.charToInt(secondOperand, 2);
+                else
+                    secondOperandIndex = h.charToInt(secondOperand, 1);
+            }
 
             h.display("Operation: " + result[0]);
             h.display("first param: " + result[1]);
             h.display("second param: " + result[2]);
             h.display("-----------");
            
-            if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || 
+            /*if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT || 
                 operation == ROTATE_RIGHT) {
                 
                 int operand2Int;
@@ -147,46 +159,28 @@ int main () {
                     else if (h.hasSquaredBrackets(secondOperand))
                         registers[h.charToInt(secondOperand, 2)] = registers[registryIndex];
                 }
-            } else if (operation == IN || operation == OUT){
+            } else */if (operation == IN || operation == OUT){
                 if (operation == IN){
-                    string registeryIndexString(1, firstOperand[1]);
-                    int registeryIndex = stoi(registeryIndexString);
-
                     int value;
                     cin >> value;
-                    registers[registeryIndex] = value;
+                    registers[firstOperandIndex] = value;
                 } else if (operation == OUT){
-                    string registeryIndexString(1, firstOperand[1]);
-                    int registeryIndex = stoi(registeryIndexString);
-
-                    cout << registers[registeryIndex] << endl;
+                    cout << registers[firstOperandIndex] << endl;
                 }
             } else if (operation == MOV){
                 if (firstOperand[0] == 'R'){
-                    string registeryIndexString1(1, firstOperand[1]);
-                    int registeryIndex1 = stoi(registeryIndexString1);
-                    string registeryIndexString2(1, secondOperand[1]);
-                    int registeryIndex2 = stoi(registeryIndexString2);
-
-                    registers[registeryIndex2] = registers[registeryIndex1];
+                    registers[secondOperandIndex] = registers[firstOperandIndex];
                 } else if (h.hasSquaredBrackets(firstOperand)) {
-                    int memoryIndex = registers[h.charToInt(firstOperand, 2)];
-                    if (!(memoryIndex > 63 && memoryIndex < 0)) {
-                        string registeryIndexstring(1, firstOperand[2]);
-                        int registeryIndex = stoi(registeryIndexstring);
-                        registers[registryIndex] = MEM[memoryIndex];
-                    } else {
+                    int memoryIndex = registers[firstOperandIndex];
+                    if (!(memoryIndex > 63 && memoryIndex < 0))
+                        registers[secondOperandIndex] = MEM[memoryIndex];
+                    else {
                         h.display("Invalid memory address");
                         return 0;
                     }
-                } else {
-                    string registeryIndexString(1, secondOperand[1]);
-                    int registeryIndex = stoi(registeryIndexString);
-
-                    registers[registeryIndex] = stoi(firstOperand);
-                }
+                } else
+                    registers[secondOperandIndex] = stoi(firstOperand);
             }
-
         }
     }
     for (int &val : registers)
