@@ -229,6 +229,14 @@ int main()
                     outcome = firstOperandValue + secondOperandValue;
                 else if (operation == SUBTRACT)
                     outcome = firstOperandValue - secondOperandValue;
+                else if (operation == MULTIPLY)
+                    outcome = secondOperandValue * firstOperandValue;
+                else if (operation == DIVIDE)
+                    outcome = secondOperandValue / firstOperandValue;
+                else if (operation == INCREMENT)
+                    outcome = firstOperandValue + 1;
+                else if (operation == DECREMENT)
+                    outcome = --firstOperandValue;
 
                 if (outcome > 127)
                     OF = 1;
@@ -274,8 +282,7 @@ int main()
 
             PC += 1;
             cout << "Program Counter: " << PC << endl;
-            cout << "Overflow Flag: " << OF << endl;
-            cout << "Underflow Flag: " << UF << endl;
+            cout << "OF/UF: " << OF << ", " << UF << endl << endl;
         } 
 
         for (int i = 0; i < 7; ++i)
