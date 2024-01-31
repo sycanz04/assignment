@@ -23,7 +23,7 @@ int main () {
 
     int registers[7] = {0, 55, 0, 0, 0, 0, 0}; // R0 to R6
     int MEM[64] = 
-    {0, 0, 0, 0, 0, 0, 0, 
+    {0, 0, 0, 33, 0, 0, 0, 
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
      0, 0, 0, 0, 0, 0, 0,
@@ -169,6 +169,16 @@ int main () {
                     int registeryIndex2 = stoi(registeryIndexString2);
 
                     registers[registeryIndex2] = registers[registeryIndex1];
+                } else if (h.hasSquaredBrackets(firstOperand)) {
+                    int memoryIndex = registers[h.charToInt(firstOperand, 2)];
+                    if (!(memoryIndex > 63 && memoryIndex < 0)) {
+                        string registeryIndexstring(1, firstOperand[2]);
+                        int registeryIndex = stoi(registeryIndexstring);
+                        registers[registryIndex] = MEM[memoryIndex];
+                    } else {
+                        h.display("Invalid memory address");
+                        return 0;
+                    }
                 } else {
                     string registeryIndexString(1, secondOperand[1]);
                     int registeryIndex = stoi(registeryIndexString);
