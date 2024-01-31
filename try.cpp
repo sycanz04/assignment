@@ -15,6 +15,8 @@ const string ADD = "ADD";
 const string SUB = "SUB";
 const string MUL = "MUL";
 const string DIV = "DIV";
+const string INC = "INC";
+const string DEC = "DEC";
 const string SHIFT_LEFT = "SHL";
 const string SHIFT_RIGHT = "SHR";
 const string ROTATE_LEFT = "ROL";
@@ -29,7 +31,7 @@ string error;
 helper h;
 
 // Defining array sizes for register and mem
-int registers[7] = {0, 0, -100, 0, 0, 0, 0}; // R0 to R6
+int registers[7] = {0, 0, 100, 0, 0, 0, 0}; // R0 to R6
 int MEM[64] = 
 {0, 0, 0, 0, 0, 0, 0, 0, 
 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -215,7 +217,7 @@ int main()
                 }
             }
 
-            else if  (operation == ADD || operation == SUB) {
+            else if  (operation == ADD || operation == SUB || operation == MUL || operation == DIV || operation == DEC || operation == INC) {
                 
                 int outcome;
 
@@ -250,8 +252,18 @@ int main()
                 }
                 else if (operation == DIV)
                 {
-                    cout << "Dividing value " << secondOperandValue << " wtih value " << firstOperandValue << endl;
+                    cout << "Dividing value " << secondOperandValue << " with value " << firstOperandValue << endl;
                     outcome = secondOperandValue / firstOperandValue;
+                }
+                else if (operation == INC)
+                {
+                    cout << "Incrementing value " << firstOperandValue << " by 1" << endl;
+                    outcome = firstOperandValue + 1;
+                }
+                else if (operation == DEC)
+                {
+                    cout << "Decrementing value " << secondOperandValue << " by 1" << endl;
+                    outcome = firstOperandValue + 1;
                 }
 
 
