@@ -84,8 +84,7 @@ int main()
 
             int secondValue = 0;
 
-            if (operation == ADD || operation == SUB || operation == MUL ||
-                operation == DIV || operation == INC || operation == Dec)
+            if (operation == ADD || operation == SUB || operation == MUL || operation == DIV || operation == INC || operation == Dec)
             {
 
                 int outcome;
@@ -120,14 +119,14 @@ int main()
                 }
                 else if (operation == INC)
                 {
-                    cout << "Add 1 to " << secondOperandValue << endl;
-                    outcome = secondOperandValue+ 1;
+                    cout << "Add 1 to " << firstOperandValue << endl;
+                    outcome = firstOperandValue+ 1;
                     cout << outcome ;
                 }
                 else if (operation == Dec)
                 {
-                    cout << "Subtract 1 from " << secondOperandValue << endl;
-                    outcome = secondOperandValue-1 ;
+                    cout << "Subtract 1 from " << firstOperandValue << endl;
+                    outcome = firstOperandValue-1 ;
                     cout << outcome ;
 
                 }
