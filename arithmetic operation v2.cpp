@@ -121,12 +121,14 @@ int main()
                 else if (operation == INC)
                 {
                     cout << "Add 1 to " << secondOperandValue << endl;
-                    outcome = secondOperandValue++ ;
+                    outcome = secondOperandValue+ 1;
+                    cout << outcome ;
                 }
                 else if (operation == Dec)
                 {
                     cout << "Subtract 1 from " << secondOperandValue << endl;
-                    outcome = secondOperandValue-- ;
+                    outcome = secondOperandValue-1 ;
+                    cout << outcome ;
 
                 }
 
