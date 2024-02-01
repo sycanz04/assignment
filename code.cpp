@@ -102,75 +102,48 @@ int main()
             h.display("First Parameter: " + result[1]);
             h.display("Second Parameter: " + result[2]);
             h.display("-----------");
-            
-            // SHL, SHR, ROL, ROR operations
-            if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT ||
-                operation == ROTATE_RIGHT) 
+
+            // Input and output operations
+            if (operation == INPUT || operation == OUTPUT)
             {
                 h.reg(firstOperand);
-                h.num(secondOperand);
-                unsigned char outcome;
 
-                if (operation == SHIFT_LEFT) 
-                    outcome = registers[firstOperandIndex] << stoi(secondOperand);
-                else if (operation == SHIFT_RIGHT)
-                    outcome = registers[firstOperandIndex] >> stoi(secondOperand);
-                else if (operation == ROTATE_LEFT)
-                    outcome = (registers[firstOperandIndex] << stoi(secondOperand)) | (registers[firstOperandIndex] >> (INT_BITS - stoi(secondOperand)));
-                else if (operation == ROTATE_RIGHT)
-                    outcome = (registers[firstOperandIndex] >> stoi(secondOperand)) | (registers[firstOperandIndex] << (INT_BITS - stoi(secondOperand)));
+                if (operation == INPUT)
+                {
+                    int value;
+                    cout << "Please input a value to store in R" << firstOperandIndex << endl;
+                    cin >> value;
+                    cout << endl;
 
-                registers[firstOperandIndex] = int(outcome);
-            }
-            
-            // LOAD, STORE operations
-            else if (operation == LOAD || operation == STORE) 
-            {
-                h.reg(firstOperand);
-                
-                int memoryValue;
-                int memoryIndex;
-
-                if (h.hasSquaredBrackets(secondOperand))
-                {
-                    memoryIndex = registers[secondOperandIndex];
-                    if (h.checkMEMIndex(memoryIndex)) 
-                    {
-                        cout << "Invalid memory index\n";
-                        return 0;
-                    }
-                    memoryValue = MEM[memoryIndex];
-                }
-                else if (h.isNumber(secondOperand))
-                {
-                    memoryIndex = stoi(secondOperand);
-                    if (h.checkMEMIndex(memoryIndex)) 
-                    {
-                        cout << "Invalid memory index\n";
-                        return 0;
-                    }
-                    memoryValue = MEM[memoryIndex];
-                }
-                else
-                {
-                    h.display("Compile error: second operand is not in the format [Rddr]");
-                    return 0;
-                }
-
-                if (operation == LOAD)
-                {
-                    cout << "Loading value: " << memoryValue << " into R" << firstOperandIndex << endl << endl;
-                    registers[firstOperandIndex] = memoryValue; 
+                    registers[firstOperandIndex] = value;
                 } 
-                else if (operation == STORE)
+                else if (operation == OUTPUT)
+                    cout << "Value at R" << firstOperandIndex << " is " << registers[firstOperandIndex] << endl << endl;
+            } 
+
+            // Move operations
+            else if (operation == MOVE)
+            {
+                if (firstOperand[0] == 'R') // First operand is a register
+                    registers[secondOperandIndex] = registers[firstOperandIndex];
+
+                else if (h.hasSquaredBrackets(firstOperand)) // First operand has squared brackets
                 {
-                    if (h.isNumber(secondOperand))
-                        MEM[memoryIndex] = registers[firstOperandIndex];
-                    else if (h.hasSquaredBrackets(secondOperand))
-                        MEM[registers[secondOperandIndex]] = registers[firstOperandIndex];
-                }
+                    int memoryIndex = registers[firstOperandIndex];
+
+                    if (h.checkMEMIndex(memoryIndex))
+                    {
+                        h.display("Invalid memory address");
+                        return 0;
+                    }
+                    else 
+                        registers[secondOperandIndex] = MEM[memoryIndex];
+                } 
+                else // First operand is a value
+                    registers[secondOperandIndex] = stoi(firstOperand);
             }
 
+            // Arithmetic, increment and decrement operations
             else if  (operation == ADD || operation == SUBTRACT || operation == MULTIPLY || 
                       operation == DIVIDE || operation == INCREMENT || operation == DECREMENT) 
             {
@@ -224,42 +197,72 @@ int main()
                     ZF = 1; // Zero flag set to 1
             }
 
-            else if (operation == INPUT || operation == OUTPUT)
+            // Rotate and shift operations
+            else if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT ||
+                    operation == ROTATE_RIGHT) 
             {
                 h.reg(firstOperand);
+                h.num(secondOperand);
+                unsigned char outcome;
 
-                if (operation == INPUT)
-                {
-                    int value;
-                    cout << "Please input a value to store in R" << firstOperandIndex << endl;
-                    cin >> value;
-                    cout << endl;
+                if (operation == SHIFT_LEFT) 
+                    outcome = registers[firstOperandIndex] << stoi(secondOperand);
+                else if (operation == SHIFT_RIGHT)
+                    outcome = registers[firstOperandIndex] >> stoi(secondOperand);
+                else if (operation == ROTATE_LEFT)
+                    outcome = (registers[firstOperandIndex] << stoi(secondOperand)) | (registers[firstOperandIndex] >> (INT_BITS - stoi(secondOperand)));
+                else if (operation == ROTATE_RIGHT)
+                    outcome = (registers[firstOperandIndex] >> stoi(secondOperand)) | (registers[firstOperandIndex] << (INT_BITS - stoi(secondOperand)));
 
-                    registers[firstOperandIndex] = value;
-                } 
-                else if (operation == OUTPUT)
-                    cout << "Value at R" << firstOperandIndex << " is " << registers[firstOperandIndex] << endl << endl;
-            } 
-
-            else if (operation == MOVE)
+                registers[firstOperandIndex] = int(outcome);
+            }
+            
+            // Load and store operations
+            else if (operation == LOAD || operation == STORE) 
             {
-                if (firstOperand[0] == 'R') // First operand is a register
-                    registers[secondOperandIndex] = registers[firstOperandIndex];
+                h.reg(firstOperand);
+                
+                int memoryValue;
+                int memoryIndex;
 
-                else if (h.hasSquaredBrackets(firstOperand)) // First operand has squared brackets
+                if (h.hasSquaredBrackets(secondOperand))
                 {
-                    int memoryIndex = registers[firstOperandIndex];
-
-                    if (h.checkMEMIndex(memoryIndex))
+                    memoryIndex = registers[secondOperandIndex];
+                    if (h.checkMEMIndex(memoryIndex)) 
                     {
-                        h.display("Invalid memory address");
+                        cout << "Invalid memory index\n";
                         return 0;
                     }
-                    else 
-                        registers[secondOperandIndex] = MEM[memoryIndex];
+                    memoryValue = MEM[memoryIndex];
+                }
+                else if (h.isNumber(secondOperand))
+                {
+                    memoryIndex = stoi(secondOperand);
+                    if (h.checkMEMIndex(memoryIndex)) 
+                    {
+                        cout << "Invalid memory index\n";
+                        return 0;
+                    }
+                    memoryValue = MEM[memoryIndex];
+                }
+                else
+                {
+                    h.display("Compile error: second operand is not in the format [Rddr]");
+                    return 0;
+                }
+
+                if (operation == LOAD)
+                {
+                    cout << "Loading value: " << memoryValue << " into R" << firstOperandIndex << endl << endl;
+                    registers[firstOperandIndex] = memoryValue; 
                 } 
-                else // First operand is a value
-                    registers[secondOperandIndex] = stoi(firstOperand);
+                else if (operation == STORE)
+                {
+                    if (h.isNumber(secondOperand))
+                        MEM[memoryIndex] = registers[firstOperandIndex];
+                    else if (h.hasSquaredBrackets(secondOperand))
+                        MEM[registers[secondOperandIndex]] = registers[firstOperandIndex];
+                }
             }
 
             PC += 1;
