@@ -206,7 +206,8 @@ int main()
                 }
             }
 
-            else if  (operation == ADD || operation == SUBTRACT) 
+            else if  (operation == ADD || operation == SUBTRACT || operation == MULTIPLY || 
+                      operation == DIVIDE || operation == INCREMENT || operation == DECREMENT) 
             {
                 int outcome;
 
@@ -242,7 +243,7 @@ int main()
                     OF = 1;
                 else if (outcome < -128)
                     UF = 1;
-
+                
                 registers[operandIndex2] = outcome; // assign the operand 2 the value after arithmetic
             }
 
