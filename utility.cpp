@@ -8,9 +8,10 @@ using namespace std;
 class helper {
 
     public:
+    // Separates line into an array of three different results
     string* parseLine(string line) 
     {
-        static string result[3]; // 0 = command, 1 = op1, 2 = op2
+        static string result[3]; // 0 = Operation, 1 = First operand, 2 = Second operand
         result[0] = "";
         result[1] = "";
         result[2] = "";
@@ -19,7 +20,7 @@ class helper {
         for (auto letter : line) 
         {
             if (letter == ',' && result[0].length() == 0) 
-                return NULL; // invalid line, return empty array 
+                return NULL; // Invalid line, return empty array 
 
             if (letter == ';')
                 break;
@@ -31,7 +32,7 @@ class helper {
             {
                 if (result[0].length() == 0) 
                 {
-                    result[0] = temp; // command
+                    result[0] = temp; // Operation
                     temp = "";
                 }
                 else if (result[1].length() == 0)
@@ -40,7 +41,7 @@ class helper {
 
             else if (letter == ',' && temp.length() > 0 && result[1].length() == 0) 
             {
-                result[1] = temp; // op1
+                result[1] = temp; // First operand
                 temp = "";
             } 
             else if  ((letter == ' ' || letter == ',') && temp.length() > 0 && result[1].length() > 0) 
@@ -52,49 +53,57 @@ class helper {
             if (result[1].length() == 0) 
                 result[1] = temp; 
             else 
-                result[2] = temp;
+                result[2] = temp; // Second operand
         }
 
         if (result[0].length() == 0 || result[1].length() == 0)
-            return NULL; // invalid line, return empty array
+            return NULL; // Invalid line, return empty array
         
         return result;
     }
+    
+    // Prints message
+    void display(string msg) 
+    {
+        cout << msg << endl;
+    }
+    
+    // Converts register index into integer
+    int charToInt(string operand, int index) 
+    {
+        string registerIndexString(1, operand[index]); // Convert a char that was pulled from a string into a string
+        int registerIndex = stoi(registerIndexString); // Convert the string to an integer
+        return registerIndex;
+    }
 
-    bool isNumber(string value) 
+    // Check if value is a number
+    bool isNumber(string value)
     {
         int number;
 
-        try 
+        try // Try to convert value to number
         {
-            number = stoi(value); //try to convert value to number
+            number = stoi(value); 
         }
-        catch(exception & e) 
-        { // catches the error (if cannot convert, then it is not a number)
+        catch(exception & e) // Catches the error (if cannot convert, then it is not a number)
+        { 
             return false;
         } 
         
         return true;
     }
 
-    bool checkValue (int number)     //can use for in, out, add, mul, div but not tested
-    {
-        if (number > 127 || number < -128) 
-        {
-            return false;
-        } return true;
-    }
-
+    // Check if value is a register
     bool isRegister(string value, string &error) 
     {
         if (value.length() != 2 || value[0] != 'R' || !isdigit(value[1])) 
         {
-            error = "invalid register entry";
+            error = "Invalid register entry";
             return false;
         }
-         
-        string indexString(1, value[1]); //creates a string using the value[1] character
-        int index = stoi(indexString); //converts the string to an integer
+        
+        int index = charToInt(value, 1);
+
         if (index < 0 || index > 7) 
         {
             error = "Register's index out of range";
@@ -104,11 +113,7 @@ class helper {
         return true;    
     }
 
-    void display(string msg) 
-    {
-        cout << msg << endl;
-    }
-
+    // Check if operand has square brackets
     bool hasSquaredBrackets (string operand) 
     {
         if (operand[0] == '[') 
@@ -116,22 +121,17 @@ class helper {
             return true;
         } return false;
     }
-
-    string extractBrackets (string operand) 
+    
+    // Check if memory index is within range of MEM
+    bool checkMEMIndex(int memoryIndex)
     {
-        string secondOperandArray1(1, operand[1]);
-        string secondOperandArray2(1, operand[2]);
-        string stringRemovedBrackets = secondOperandArray1 + secondOperandArray2;
-        return stringRemovedBrackets;
-    }
-        
-    int charToInt(string operand, int index) 
-    {
-        string registeryIndexString(1, operand[index]); //convert a char that was pulled from a string into a string
-        int registeryIndex = stoi(registeryIndexString); //convert the string to an integer
-        return registeryIndex;
+        if (memoryIndex > 63 || memoryIndex < 0)
+            return true;
+        else 
+            return false;
     }
 
+    // Prints memory
     void printMEM(int * array) 
     {
         int index = 0;
@@ -146,12 +146,42 @@ class helper {
         }
     }
 
-    bool checkMEMIndex(int memoryIndex)
+    // Function to check if "data.asm" file exists. If not, create a new file
+    bool reading()
     {
-        if (memoryIndex > 63 || memoryIndex < 0)
-            return true;
-        else 
+        // Check if the file "data.asm" exists
+        ifstream check("data.asm");
+        bool exists = check.good();
+        check.close();
+
+        if (!exists)
+        {
+            display("data.asm file not found, new file created");
+            ofstream datafile("data.asm");
             return false;
+        } return true;
     }
 
+    // Simplified isRegister()
+    bool reg(string first)
+    {
+        string error;
+        // Test if first operand is a register, else quit the program
+        if (!isRegister(first, error)) 
+        {
+            display(error);
+            exit(1);
+        } return true;
+    }
+
+    // Simplified isNumber()
+    bool num(string second)
+    {
+        // Test if second operand is a number, else quit the program
+        if (!isNumber(second)) 
+        {
+            display("Compile error: second operand is missing or is not a number.");
+            exit(1);
+        } return true;
+    }
 };
