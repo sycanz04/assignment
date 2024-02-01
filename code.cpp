@@ -47,14 +47,14 @@ int MEM[64] =
 bool reading()
 {
     // Check if the file "data.txt" exists
-    ifstream check("william-basic-20240201a.asm");
+    ifstream check("data.asm");
     bool exists = check.good();
     check.close();
 
     if (!exists)
     {
         h.display("data.asm file not found, new file created");
-        ofstream datafile("william-basic-20240201a.asm");
+        ofstream datafile("data.asm");
         return false;
     } return true;
 }
@@ -101,7 +101,7 @@ int main()
         string secondOperand = "";
 
         // Read from the text file
-        ifstream datafile("william-basic-20240201a.asm");
+        ifstream datafile("data.asm");
         // Use loop to read file line by line
         while (getline(datafile, line)) 
         {
@@ -138,8 +138,8 @@ int main()
             }
 
             h.display("Operation: " + result[0]);
-            h.display("first param: " + result[1]);
-            h.display("second param: " + result[2]);
+            h.display("First Parameter: " + result[1]);
+            h.display("Second Parameter: " + result[2]);
             h.display("-----------");
            
             if (operation == SHIFT_LEFT || operation == SHIFT_RIGHT || operation == ROTATE_LEFT ||
@@ -147,15 +147,18 @@ int main()
             {
                 reg(firstOperand);
                 num(secondOperand);
+                unsigned char outcome;
 
                 if (operation == SHIFT_LEFT) 
-                    registers[firstOperandIndex] = registers[firstOperandIndex] << stoi(secondOperand);
+                    outcome = registers[firstOperandIndex] << stoi(secondOperand);
                 else if (operation == SHIFT_RIGHT)
-                    registers[firstOperandIndex] = registers[firstOperandIndex] >> stoi(secondOperand);
+                    outcome = registers[firstOperandIndex] >> stoi(secondOperand);
                 else if (operation == ROTATE_LEFT)
-                    registers[firstOperandIndex] = (registers[firstOperandIndex] << stoi(secondOperand)) | (registers[firstOperandIndex] >> (INT_BITS - stoi(secondOperand)));
+                    outcome = (registers[firstOperandIndex] << stoi(secondOperand)) | (registers[firstOperandIndex] >> (INT_BITS - stoi(secondOperand)));
                 else if (operation == ROTATE_RIGHT)
-                    registers[firstOperandIndex] = (registers[firstOperandIndex] >> stoi(secondOperand)) | (registers[firstOperandIndex] << (INT_BITS - stoi(secondOperand)));
+                    outcome = (registers[firstOperandIndex] >> stoi(secondOperand)) | (registers[firstOperandIndex] << (INT_BITS - stoi(secondOperand)));
+
+                registers[firstOperandIndex] = int(outcome);
             }
             
             else if (operation == LOAD || operation == STORE) 
@@ -250,7 +253,10 @@ int main()
                 }
 
                 if (outcome > 127)
+                {
                     OF = 1;
+                    CF = 1;
+                }
                 else if (outcome < -128)
                     UF = 1;
                 else if (outcome == 0)
@@ -264,11 +270,12 @@ int main()
                     int value;
                     cout << "Please input a value to store in R" << firstOperandIndex << endl;
                     cin >> value;
+                    cout << endl;
 
                     registers[firstOperandIndex] = value;
                 } 
                 else if (operation == OUTPUT)
-                    cout << registers[firstOperandIndex] << endl;
+                    cout << "Value at R" << firstOperandIndex << " is " << registers[firstOperandIndex] << endl << endl;
             } 
 
             else if (operation == MOVE)
@@ -295,21 +302,16 @@ int main()
             PC += 1;
             cout << "Program Counter: " << PC << endl;
             cout << "OF/UF/CF/ZF: " << OF << ", " << UF << ", " << CF << ", " << ZF << endl << endl;
-
-            for (int &val : registers)
+            for (int i = 0; i < 7; ++i)
             {
-                cout << val << " ";
+                cout << "R" << i << ": " << registers[i] << " ";
             }
-            cout << endl << endl;
+            cout << endl;
+
+            cout << "Memory: " << endl;
+            h.printMEM(MEM);
+            cout << endl;
         } 
-
-        for (int i = 0; i < 7; ++i)
-        {
-            cout << "R" << i << ": " << registers[i] << " ";
-        }
-        cout << endl;
-
-        h.printMEM(MEM);
     }
     
     return 0;
