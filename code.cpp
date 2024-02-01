@@ -301,12 +301,12 @@ int main()
 
             PC += 1;
             cout << "Program Counter: " << PC << endl;
-            cout << "OF/UF/CF/ZF: " << OF << ", " << UF << ", " << CF << ", " << ZF << endl << endl;
+            cout << "OF/UF/CF/ZF: " << OF << ", " << UF << ", " << CF << ", " << ZF << "#" << endl;
             for (int i = 0; i < 7; ++i)
             {
                 cout << "R" << i << ": " << registers[i] << " ";
             }
-            cout << endl;
+            cout << "#" << endl;
 
             cout << "Memory: " << endl;
             h.printMEM(MEM);
