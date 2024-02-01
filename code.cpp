@@ -213,12 +213,12 @@ int main()
                     registers[firstOperandIndex] = outcome;
                 }
 
-                if (outcome > 127)
+                if (outcome > 255)
                 {
                     OF = 1; // Overflow flag set to 1
                     CF = 1; // Carry flag set to 1
                 }
-                else if (outcome < -128)
+                else if (outcome < 0)
                     UF = 1; // Underflow flag set to 1
                 else if (outcome == 0)
                     ZF = 1; // Zero flag set to 1
@@ -264,12 +264,12 @@ int main()
 
             PC += 1;
             cout << "Program Counter: " << PC << endl;
-            cout << "OF/UF/CF/ZF: " << OF << ", " << UF << ", " << CF << ", " << ZF << endl << endl;
+            cout << "OF/UF/CF/ZF: " << OF << ", " << UF << ", " << CF << ", " << ZF << "#" << endl;
             for (int i = 0; i < 7; ++i)
             {
                 cout << "R" << i << ": " << registers[i] << " ";
             }
-            cout << endl;
+            cout << "#" << endl;
 
             cout << "Memory: " << endl;
             h.printMEM(MEM);
