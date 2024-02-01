@@ -32,7 +32,7 @@ string error;
 helper h;
 
 // Defining array sizes for register and mem
-int registers[8] = {00, 00, 00, 00, 00, 00, 00, 00}; // R0 to R7
+int registers[7] = {00, 00, 00, 00, 00, 00, 00}; // R0 to R6
 int MEM[64] = 
 {00, 00, 00, 00, 00, 00, 00, 00, 
 00, 00, 00, 00, 00, 00, 00, 00, 
@@ -47,14 +47,14 @@ int MEM[64] =
 bool reading()
 {
     // Check if the file "data.txt" exists
-    ifstream check("data.asm");
+    ifstream check("william-basic-20240201a.asm");
     bool exists = check.good();
     check.close();
 
     if (!exists)
     {
         h.display("data.asm file not found, new file created");
-        ofstream datafile("data.asm");
+        ofstream datafile("william-basic-20240201a.asm");
         return false;
     } return true;
 }
@@ -83,11 +83,11 @@ bool num(string second)
 
 int main()
 {
-    //Declare program counter
     int PC = 0;
-    // Declare OF and UF flag
     int OF = 0;
     int UF = 0;
+    int ZF = 0;
+    int CF = 0;
 
     bool filefound = reading();
 
@@ -101,7 +101,7 @@ int main()
         string secondOperand = "";
 
         // Read from the text file
-        ifstream datafile("data.asm");
+        ifstream datafile("william-basic-20240201a.asm");
         // Use loop to read file line by line
         while (getline(datafile, line)) 
         {
@@ -202,7 +202,7 @@ int main()
                     if (h.isNumber(secondOperand))
                         MEM[memoryIndex] = registers[firstOperandIndex];
                     else if (h.hasSquaredBrackets(secondOperand))
-                        MEM[secondOperandIndex] = registers[firstOperandIndex];
+                        MEM[registers[secondOperandIndex]] = registers[firstOperandIndex];
                 }
             }
 
@@ -218,33 +218,43 @@ int main()
                     return 0; 
                 }
 
-                // Get the index from both registers
-                int operandIndex1 = h.charToInt(firstOperand, 1);
-                int operandIndex2 = h.charToInt(secondOperand, 1);
-
-                // Get the value from the registers through the index 
-                int firstOperandValue = registers[operandIndex1];
-                int secondOperandValue = registers[operandIndex2];
-
                 if (operation == ADD)
-                    outcome = firstOperandValue + secondOperandValue;
+                {
+                    outcome = registers[firstOperandIndex] + registers[secondOperandIndex];
+                    registers[secondOperandIndex] = outcome; // assign the operand 2 the value after arithmetic
+                }
                 else if (operation == SUBTRACT)
-                    outcome = firstOperandValue - secondOperandValue;
+                {
+                    outcome = registers[secondOperandIndex] - registers[firstOperandIndex];
+                    registers[secondOperandIndex] = outcome; // assign the operand 2 the value after arithmetic
+                }
                 else if (operation == MULTIPLY)
-                    outcome = secondOperandValue * firstOperandValue;
+                {
+                    outcome = registers[secondOperandIndex] * registers[firstOperandIndex];
+                    registers[secondOperandIndex] = outcome; // assign the operand 2 the value after arithmetic
+                }
                 else if (operation == DIVIDE)
-                    outcome = secondOperandValue / firstOperandValue;
+                {
+                    outcome = registers[secondOperandIndex] / registers[firstOperandIndex];
+                    registers[secondOperandIndex] = outcome; // assign the operand 2 the value after arithmetic
+                }
                 else if (operation == INCREMENT)
-                    outcome = firstOperandValue + 1;
+                {
+                    outcome = registers[firstOperandIndex] + 1;
+                    registers[firstOperandIndex] = outcome;
+                }
                 else if (operation == DECREMENT)
-                    outcome = --firstOperandValue;
+                {
+                    outcome = registers[firstOperandIndex] - 1;
+                    registers[firstOperandIndex] = outcome;
+                }
 
                 if (outcome > 127)
                     OF = 1;
                 else if (outcome < -128)
                     UF = 1;
-                
-                registers[operandIndex2] = outcome; // assign the operand 2 the value after arithmetic
+                else if (outcome == 0)
+                    ZF = 1;
             }
 
             else if (operation == INPUT || operation == OUTPUT)
@@ -252,6 +262,7 @@ int main()
                 if (operation == INPUT)
                 {
                     int value;
+                    cout << "Please input a value to store in R" << firstOperandIndex << endl;
                     cin >> value;
 
                     registers[firstOperandIndex] = value;
@@ -283,7 +294,13 @@ int main()
 
             PC += 1;
             cout << "Program Counter: " << PC << endl;
-            cout << "OF/UF: " << OF << ", " << UF << endl << endl;
+            cout << "OF/UF/CF/ZF: " << OF << ", " << UF << ", " << CF << ", " << ZF << endl << endl;
+
+            for (int &val : registers)
+            {
+                cout << val << " ";
+            }
+            cout << endl << endl;
         } 
 
         for (int i = 0; i < 7; ++i)

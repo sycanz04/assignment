@@ -21,6 +21,9 @@ class helper {
             if (letter == ',' && result[0].length() == 0) 
                 return NULL; // invalid line, return empty array 
 
+            if (letter == ';')
+                break;
+
             if (letter != ' ' && letter != ',')
                 temp += toupper(letter);
 
