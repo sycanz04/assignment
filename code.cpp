@@ -252,12 +252,12 @@ int main()
                     registers[firstOperandIndex] = outcome;
                 }
 
-                if (outcome > 127)
+                if (outcome > 255)
                 {
                     OF = 1;
                     CF = 1;
                 }
-                else if (outcome < -128)
+                else if (outcome < 0)
                     UF = 1;
                 else if (outcome == 0)
                     ZF = 1;
