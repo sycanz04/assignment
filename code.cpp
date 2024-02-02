@@ -279,6 +279,39 @@ int main()
             cout << endl;
         } 
     }
+    // Opens a file "output.txt"
+    ofstream outputFile("output.txt");
+
+    // Outputs registers into "output.txt"
+    outputFile << "Registers: ";
+    for (int i = 0; i < sizeof(registers) / sizeof(registers[0]); ++i)
+    {
+        outputFile << registers[i] << " ";
+    }
+    outputFile << "#" << endl;
+
+    // Outputs flags into "output.txt"
+    outputFile << "Flags: " << OF << " " << UF << " " << CF << " " << ZF << "#" << endl;;
+
+    // Outputs program counter into "output.txt"
+    outputFile << "PC: " << PC << endl << endl;
+
+    // Outputs memory into "output.txt"
+    outputFile << "Memory: " << endl;
+    int k = 0;
+    for (int i = 0; i < 8; i ++) 
+    {
+        for (int j = 0; j < 8; j++) 
+        {
+            outputFile << setw(5) << MEM[k];
+            k++;
+        }
+        outputFile << endl;
+    }
+    outputFile << "#";
+
+    // Closes file "output.txt"
+    outputFile.close();
     
     return 0;
 }
